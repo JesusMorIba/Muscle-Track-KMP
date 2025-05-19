@@ -1,6 +1,8 @@
-import com.jmoriba.muscletrack.data.network.model.ExerciseSetData
+import com.jmoriba.muscletrack.data.network.models.ExerciseSetData
+import kotlinx.serialization.Serializable
 
 
+@Serializable
 data class ExerciseData (
     val name: String,
     val sets: List<ExerciseSetData> = emptyList()

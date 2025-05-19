@@ -30,16 +30,15 @@ import kotlinx.datetime.TimeZone
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun Calendar() {
-    val currentDate = remember { Clock.System.todayIn(TimeZone.currentSystemDefault()) }
-    var selectedMonth by remember { mutableStateOf(YearMonth(currentDate.year, currentDate.month)) }
-    var selectedDate by remember { mutableStateOf(currentDate) }
-
+fun Calendar(
+    selectedDate: LocalDate,
+    onDateSelected: (LocalDate) -> Unit
+) {
+    var selectedMonth by remember { mutableStateOf(YearMonth(selectedDate.year, selectedDate.month)) }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp)
             .border(1.dp, Grey200Color, RoundedCornerShape(16.dp)),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
@@ -68,7 +67,7 @@ fun Calendar() {
             MonthCalendar(
                 currentMonth = selectedMonth,
                 selectedDate = selectedDate,
-                onDateSelected = { selectedDate = it }
+                onDateSelected = { onDateSelected(it) }
             )
         }
     }
@@ -223,7 +222,12 @@ private fun String.capitalize(): String {
 @Preview
 @Composable
 fun CalendarScreenPreview() {
+    val currentDate = Clock.System.todayIn(TimeZone.currentSystemDefault())
+
     MaterialTheme {
-        Calendar()
+        Calendar(
+            selectedDate = currentDate,
+            onDateSelected = {}
+        )
     }
 }

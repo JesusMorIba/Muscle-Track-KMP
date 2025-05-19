@@ -1,5 +1,8 @@
-package com.jmoriba.muscletrack.data.network.model
+package com.jmoriba.muscletrack.data.network.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class ExerciseSetData(
     val weight: Int,
     val reps: Int,

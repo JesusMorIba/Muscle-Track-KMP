@@ -1,13 +1,14 @@
 package com.jmoriba.muscletrack.navigation
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Search
-import com.jmoriba.muscletrack.designsystem.component.navigation.NavigationItem
+import muscletrack.composeapp.generated.resources.Res
+import muscletrack.composeapp.generated.resources.ic_home
+import muscletrack.composeapp.generated.resources.ic_report
+import muscletrack.composeapp.generated.resources.ic_pose
+import muscletrack.composeapp.generated.resources.ic_setting
+import org.jetbrains.compose.resources.DrawableResource
 
 object Routes {
+    const val LOGIN = "/login"
     const val HOME = "/home"
     const val DETAIL = "/detail/{id}"
     const val REPORT = "/report"
@@ -15,24 +16,30 @@ object Routes {
     const val SETTINGS = "/settings"
 }
 
+data class NavigationItems(
+    val icon: DrawableResource,
+    val title: String,
+    val route: String
+)
+
 val navigationItemsLists = listOf(
-    NavigationItem(
-        icon = Icons.Outlined.Home,
+    NavigationItems(
+        icon = Res.drawable.ic_home,
         title = "Home",
         route = Routes.HOME,
     ),
-    NavigationItem(
-        icon = Icons.Outlined.Search,
+    NavigationItems(
+        icon = Res.drawable.ic_report,
         title = "Report",
         route = Routes.REPORT,
     ),
-    NavigationItem(
-        icon = Icons.Outlined.Search,
+    NavigationItems(
+        icon = Res.drawable.ic_pose,
         title = "Pose Detection",
         route = Routes.DETECTION,
     ),
-    NavigationItem(
-        icon = Icons.Outlined.Search,
+    NavigationItems(
+        icon = Res.drawable.ic_setting,
         title = "Settings",
         route = Routes.SETTINGS,
     ),

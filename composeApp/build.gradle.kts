@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -7,6 +6,16 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    kotlin("plugin.serialization") version "2.0.0"
+    id("app.cash.sqldelight") version "2.0.2"
+}
+
+sqldelight {
+    databases {
+        create("MuscleTrackDatabase") {
+            packageName.set("com.jmoriba.muscletrack.db")
+        }
+    }
 }
 
 kotlin {
@@ -33,8 +42,9 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation("org.tensorflow:tensorflow-lite:2.17.0")
 
+            // ML Kit
+            implementation("com.google.mlkit:pose-detection-accurate:18.0.0-beta5")
             // CameraX core library
             implementation("androidx.camera:camera-core:1.4.1")
             // CameraX Camera2 extensions
@@ -43,6 +53,15 @@ kotlin {
             implementation("androidx.camera:camera-lifecycle:1.4.1")
             // CameraX View class
             implementation("androidx.camera:camera-view:1.4.1")
+
+            // Koin
+            implementation(project.dependencies.platform("io.insert-koin:koin-bom:4.0.4"))
+            implementation("io.insert-koin:koin-core")
+            implementation("io.insert-koin:koin-android")
+
+            // Ktor
+            implementation(libs.ktor.client.okhttp)
+            implementation(libs.kotlinx.coroutines.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -55,9 +74,11 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
-            // Coil
-            implementation("io.coil-kt.coil3:coil-compose:3.1.0")
-            implementation("io.coil-kt.coil3:coil-network-okhttp:3.1.0")
+            // Camera Permission
+            implementation("dev.icerock.moko:permissions-camera:0.19.1")
+
+            // Support Permission
+            implementation("dev.icerock.moko:permissions-compose:0.19.1")
 
             // UI Tooling Preview
             implementation("org.jetbrains.compose.components:components-ui-tooling-preview:1.8.0-beta01")
@@ -70,9 +91,29 @@ kotlin {
 
             // ViewModel PreCompose
             api("moe.tlaster:precompose-viewmodel:1.6.2")
+
+            // Coil
+            implementation("io.coil-kt.coil3:coil-compose:3.1.0")
+            implementation("io.coil-kt.coil3:coil-network-ktor3:3.1.0")
+
+            // Koin
+            implementation(project.dependencies.platform("io.insert-koin:koin-bom:4.0.4"))
+            implementation("io.insert-koin:koin-core")
+            implementation("io.insert-koin:koin-compose")
+            implementation("moe.tlaster:precompose-koin:1.6.2")
+
+            // Ktor
+            implementation(libs.ktor.client.core)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.ktor.serialization)
+
+            // Supabase
+            implementation("io.github.jan-tennert.supabase:postgrest-kt:3.1.4")
+
         }
         iosMain.dependencies {
-            implementation("org.tensorflow:tensorflow-lite:2.17.0")
+            // Ktor
+            implementation(libs.ktor.client.darwin)
         }
     }
 }

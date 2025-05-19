@@ -6,7 +6,6 @@ import com.jmoriba.muscletrack.designsystem.component.navigation.NavigationBar
 import com.jmoriba.muscletrack.navigation.Navigation
 import moe.tlaster.precompose.navigation.rememberNavigator
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScaffold() {

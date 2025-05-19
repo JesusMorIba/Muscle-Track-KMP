@@ -1,6 +1,8 @@
-package com.jmoriba.muscletrack.model
+package com.jmoriba.muscletrack.domain.models
 
-import com.jmoriba.muscletrack.data.network.model.WorkoutDetailData
+import ExerciseData
+import com.jmoriba.muscletrack.data.local.models.WorkoutDetailData
+import com.jmoriba.muscletrack.data.network.models.ExerciseSetData
 
 data class WorkoutDetailModelUI(
     val id: Int,
@@ -32,7 +34,7 @@ data class WorkoutDetailModelUI(
                 kcal = this.kcal,
                 duration = this.duration,
                 notes = this.notes,
-                exercises = emptyList(),
+                exercises = this.exercises.map { it.toExercise() },
             )
         }
     }
@@ -47,4 +49,19 @@ data class WorkoutDetailModelUI(
             val rir: Int
         )
     }
+}
+
+fun ExerciseData.toExercise(): WorkoutDetailModelUI.Exercise {
+    return WorkoutDetailModelUI.Exercise(
+        name = this.name,
+        sets = this.sets.map { it.toExerciseSet() }
+    )
+}
+
+fun ExerciseSetData.toExerciseSet(): WorkoutDetailModelUI.Exercise.ExerciseSet {
+    return WorkoutDetailModelUI.Exercise.ExerciseSet(
+        weight = this.weight,
+        reps = this.reps,
+        rir = this.rir
+    )
 }

@@ -7,16 +7,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,8 +29,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jmoriba.muscletrack.designsystem.component.item.WorkoutItem
 import com.jmoriba.muscletrack.designsystem.component.placeholder.EmptyWorkouts
+import com.jmoriba.muscletrack.designsystem.component.stat.StatRow
 import com.jmoriba.muscletrack.designsystem.theme.Grey200Color
-import com.jmoriba.muscletrack.model.WorkoutModelUI
+import com.jmoriba.muscletrack.designsystem.theme.PrimaryColor
+import com.jmoriba.muscletrack.designsystem.theme.spacingS
+import com.jmoriba.muscletrack.domain.models.WorkoutModelUI
 import muscletrack.composeapp.generated.resources.Res
 import muscletrack.composeapp.generated.resources.ic_activity
 import muscletrack.composeapp.generated.resources.ic_fire
@@ -37,7 +42,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun WorkoutHistoryCard(
+fun WorkoutReportCard(
     workouts: List<WorkoutModelUI?>,
     onWorkoutClick: (workout: WorkoutModelUI) -> Unit
 ) {
@@ -241,23 +246,70 @@ fun ExerciseCard(
     }
 }
 
+@Composable
+fun WeeklySummaryCard(
+    workouts: List<WorkoutModelUI?>
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(1.dp, Grey200Color, RoundedCornerShape(16.dp)),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    Text(
+                        text = "Weekly Summary",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = "1–7 mayo",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(spacingS()))
+
+            StatRow(
+                label1 = "Total sessions",
+                value1 = workouts.size,
+                label2 = "Total duration",
+                value2 = workouts.sumOf { it?.duration ?: 0 },
+            )
+
+            StatRow(
+                label1 = "Estimated calories",
+                value1 = workouts.sumOf { it?.kcal?.toInt() ?: 0 },
+                label2 = "Average per session",
+                value2 = if (workouts.isNotEmpty()) workouts.sumOf { it?.duration ?: 0 } / workouts.size else 0
+            )
+        }
+    }
+}
+
 @Preview
 @Composable
 fun WorkoutHistoryCardPreview() {
-
     Column {
-        WorkoutHistoryCard(
+        WorkoutReportCard(
             workouts = listOf(WorkoutModelUI.defaultWorkoutModelUI()),
             onWorkoutClick = {}
         )
-
-        WorkoutHistoryCard(
+        WorkoutReportCard(
             workouts = emptyList(),
             onWorkoutClick = {}
         )
     }
 }
-
 
 @Preview
 @Composable
@@ -271,3 +323,12 @@ fun ExerciseCardPreview() {
         )
     }
 }
+
+@Preview
+@Composable
+fun WeeklySummaryCardPreview() {
+    Column {
+        WeeklySummaryCard(WorkoutModelUI.defaultWorkoutModelUIList())
+    }
+}
+

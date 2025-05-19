@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.jmoriba.muscletrack.designsystem.theme.Green
 import com.jmoriba.muscletrack.designsystem.theme.Orange
-import com.jmoriba.muscletrack.model.WorkoutModelUI
+import com.jmoriba.muscletrack.domain.models.WorkoutModelUI
 import muscletrack.composeapp.generated.resources.Res
 import muscletrack.composeapp.generated.resources.ic_arrow_left
 import muscletrack.composeapp.generated.resources.ic_fire
@@ -120,11 +120,12 @@ fun WorkoutItem (
 fun WorkoutItemPreview() {
     WorkoutItem(
         workout = WorkoutModelUI(
-            id = 1,
+            id = "1",
             name = "Full-Body HIT Blast",
             photo = "https://i.imgur.com/u3ZefLb.png",
             kcal = 250,
             duration = 20,
+            date = "23-03-2000"
         ),
         onWorkoutClick = {}
     )
