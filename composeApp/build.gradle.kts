@@ -109,7 +109,10 @@ kotlin {
 
             // Supabase
             implementation("io.github.jan-tennert.supabase:postgrest-kt:3.1.4")
+            implementation("io.github.jan-tennert.supabase:auth-kt:3.1.4")
 
+            // Chart
+            implementation("io.github.thechance101:chart:1.1.0")
         }
         iosMain.dependencies {
             // Ktor

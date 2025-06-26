@@ -1,8 +1,8 @@
 package com.jmoriba.muscletrack.feature.posedetection.presentation
 
 import com.jmoriba.muscletrack.domain.models.WorkoutModelUI
-import com.jmoriba.muscletrack.extension.PermissionBridge
-import com.jmoriba.muscletrack.extension.PermissionResultCallback
+import com.jmoriba.muscletrack.utils.PermissionBridge
+import com.jmoriba.muscletrack.utils.PermissionResultCallback
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import moe.tlaster.precompose.viewmodel.ViewModel

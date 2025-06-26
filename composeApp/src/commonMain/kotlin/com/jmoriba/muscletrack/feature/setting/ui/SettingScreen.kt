@@ -12,8 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.jmoriba.muscletrack.designsystem.component.camera.CameraView
-import com.jmoriba.muscletrack.designsystem.component.navigation.NavigationBar
 import com.jmoriba.muscletrack.designsystem.theme.LightBackgroundAppColor
 import com.jmoriba.muscletrack.designsystem.theme.spacingS
 

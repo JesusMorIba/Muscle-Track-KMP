@@ -10,21 +10,21 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.jmoriba.muscletrack.designsystem.component.camera.CameraView
-import com.jmoriba.muscletrack.designsystem.component.title.ScreenTitle
 import com.jmoriba.muscletrack.designsystem.theme.LightBackgroundAppColor
 import com.jmoriba.muscletrack.designsystem.theme.spacingS
-import com.jmoriba.muscletrack.domain.models.WorkoutModelUI
-import com.jmoriba.muscletrack.feature.posedetection.presentation.PoseDetectionUiState
-
+import com.jmoriba.muscletrack.feature.posedetection.presentation.PoseDetectionViewModel
+import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 
 @Composable
 fun PoseDetectionScreen(
-    uiState: PoseDetectionUiState,
-    onWorkoutClick: (WorkoutModelUI) -> Unit
+    viewModel : PoseDetectionViewModel,
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Box(Modifier.background(LightBackgroundAppColor)) {
         Scaffold(containerColor = Color.Transparent) { padding ->
             Column(
@@ -34,7 +34,6 @@ fun PoseDetectionScreen(
                     .imePadding()
                     .padding(horizontal = spacingS())
             ) {
-                ScreenTitle("Pose Detection")
                 if (uiState.isCameraPermissionGranted) {
                     CameraView()
                 } else {

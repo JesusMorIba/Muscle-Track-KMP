@@ -1,24 +1,26 @@
 package com.jmoriba.muscletrack.domain.models
 
-import com.jmoriba.muscletrack.data.local.models.WorkoutData
+import com.jmoriba.muscletrack.data.models.response.WorkoutData
 
 data class WorkoutModelUI(
     val id: String,
     val name: String,
-    val photo: String?,
-    val kcal: Int?,
+    val isCompleted: Boolean,
     val duration: Int,
+    val notes: String?,
     val date: String,
+    val tags: List<String> = emptyList()
 ) {
     companion object {
         fun defaultWorkoutModelUI(): WorkoutModelUI {
             return WorkoutModelUI(
                 id = "1",
                 name = "Default Workout",
-                photo = "https://i.imgur.com/N1GXnzq.png",
-                kcal = 4,
+                isCompleted = false,
                 duration = 15,
-                date = "Lun"
+                notes = "Workout",
+                date = "Lun",
+                tags = listOf("default")
             )
         }
 
@@ -27,42 +29,47 @@ data class WorkoutModelUI(
                 WorkoutModelUI(
                     id = "1",
                     name = "Full Body Strength",
-                    photo = "https://i.imgur.com/N1GXnzq.png",
-                    kcal = 150,
+                    isCompleted = true,
                     duration = 40,
-                    date = "Lun"
+                    notes = "Workout",
+                    date = "Lun",
+                    tags = listOf("fuerza", "fullbody")
                 ),
                 WorkoutModelUI(
                     id = "2",
                     name = "Upper Body Blast",
-                    photo = "https://i.imgur.com/N1GXnzq.png",
-                    kcal = 120,
+                    isCompleted = false,
                     duration = 35,
-                    date = "Mar"
+                    notes = "Workout",
+                    date = "Mar",
+                    tags = listOf("superior")
                 ),
                 WorkoutModelUI(
                     id = "3",
                     name = "Cardio Burn",
-                    photo = "https://i.imgur.com/N1GXnzq.png",
-                    kcal = 200,
+                    isCompleted = true,
                     duration = 30,
-                    date = "Mié"
+                    notes = "Workout",
+                    date = "Mié",
+                    tags = listOf("cardio")
                 ),
                 WorkoutModelUI(
                     id = "4",
                     name = "Leg Day Extreme",
-                    photo = "https://i.imgur.com/N1GXnzq.png",
-                    kcal = 180,
+                    isCompleted = false,
                     duration = 45,
-                    date = "Jue"
+                    notes = "Workout",
+                    date = "Jue",
+                    tags = listOf("piernas")
                 ),
                 WorkoutModelUI(
                     id = "5",
                     name = "Core & Stretch",
-                    photo = "https://i.imgur.com/N1GXnzq.png",
-                    kcal = 100,
+                    isCompleted = true,
                     duration = 25,
-                    date = "Vie"
+                    notes = "Workout",
+                    date = "Vie",
+                    tags = listOf("core", "estiramiento")
                 )
             )
         }
@@ -71,9 +78,9 @@ data class WorkoutModelUI(
             return WorkoutModelUI(
                 id = this.id,
                 name = this.name,
-                photo = this.photo,
-                kcal = this.kcal,
+                isCompleted = this.isCompleted,
                 duration = this.duration,
+                notes = this.notes,
                 date = this.date
             )
         }
