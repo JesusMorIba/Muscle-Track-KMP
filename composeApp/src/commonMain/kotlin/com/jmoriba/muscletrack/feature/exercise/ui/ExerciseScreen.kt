@@ -10,8 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.jmoriba.muscletrack.data.models.entities.Equipment
-import com.jmoriba.muscletrack.data.models.entities.MuscleGroup
 import com.jmoriba.muscletrack.designsystem.component.searchbar.SearchBar
 import com.jmoriba.muscletrack.designsystem.component.card.ExerciseCard
 import com.jmoriba.muscletrack.designsystem.component.selector.CustomSelector
@@ -52,6 +50,7 @@ fun ExerciseScreen(viewModel : ExerciseViewModel, onExerciseClick: (String) -> U
 
                 Spacer(modifier = Modifier.height(spacingS()))
 
+                /*
                 CustomSelector(
                     selectedItem = uiState.selectedMuscleGroup,
                     items = listOf<MuscleGroup?>(null) + MuscleGroup.entries,
@@ -59,10 +58,11 @@ fun ExerciseScreen(viewModel : ExerciseViewModel, onExerciseClick: (String) -> U
                     placeholder = "Select muscle group",
                     leadingIcon = Res.drawable.ic_muscle_group,
                     itemDisplayText = { it?.displayName ?: "All muscle groups" }
-                )
+                )*/
 
                 Spacer(modifier = Modifier.height(spacingS()))
 
+                /*
                 CustomSelector(
                     selectedItem = uiState.selectedEquipment,
                     items = listOf<Equipment?>(null) + Equipment.entries,
@@ -70,13 +70,13 @@ fun ExerciseScreen(viewModel : ExerciseViewModel, onExerciseClick: (String) -> U
                     placeholder = "Select equipment",
                     leadingIcon = Res.drawable.ic_equipment,
                     itemDisplayText = { it?.displayName ?: "All equipment" }
-                )
+                )*/
 
                 Spacer(modifier = Modifier.height(spacingS()))
 
                 ExerciseCard(
                     exercises = uiState.filteredExercises,
-                    onViewDetails = { exercise -> onExerciseClick(exercise.exerciseId) },
+                    onViewDetails = { exercise -> onExerciseClick(exercise.id) },
                     onDelete = {}
                 )
 

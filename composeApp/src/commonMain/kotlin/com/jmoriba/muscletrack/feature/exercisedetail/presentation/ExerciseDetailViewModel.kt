@@ -1,7 +1,8 @@
 package com.jmoriba.muscletrack.feature.exercisedetail.presentation
 
-import com.jmoriba.muscletrack.data.models.response.ExerciseDetailsData
-import com.jmoriba.muscletrack.data.models.response.WorkoutExerciseData
+import com.jmoriba.muscletrack.common.utils.Resource
+import com.jmoriba.muscletrack.network.model.response.ExerciseData
+import com.jmoriba.muscletrack.network.model.response.WorkoutData
 import com.jmoriba.muscletrack.network.repository.ExerciseDetailRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +25,7 @@ class ExerciseDetailViewModel(private val repository: ExerciseDetailRepository) 
     }
 
     fun loadExerciseDetail(exerciseId: String) {
+        /*
         viewModelScope.launch {
             val details = repository.getExerciseDetails(exerciseId)
             val workouts = repository.getWorkoutHistoryForExercise(exerciseId)
@@ -31,13 +33,13 @@ class ExerciseDetailViewModel(private val repository: ExerciseDetailRepository) 
                 selectedExercise = details,
                 workoutHistory = workouts.filterNotNull()
             )
-        }
+        }*/
     }
 }
 
 data class ExerciseDetailUiState(
-    val selectedExercise: ExerciseDetailsData? = null,
-    val workoutHistory: List<WorkoutExerciseData?> = emptyList()
+    val selectedExercise: Resource<ExerciseData> = Resource.Loading,
+    val workoutHistory: Resource<List<WorkoutData>> = Resource.Loading
 )
 
 sealed interface ExerciseDetailEvent {

@@ -1,10 +1,9 @@
 package com.jmoriba.muscletrack.domain.repository
 
-import com.jmoriba.muscletrack.data.models.response.ExerciseDetailsData
-import com.jmoriba.muscletrack.data.models.response.WorkoutExerciseData
 import com.jmoriba.muscletrack.network.repository.ExerciseDetailRepository
 import com.jmoriba.muscletrack.network.api.ApiRoutes
 import com.jmoriba.muscletrack.network.api.HttpClientProvider
+import com.jmoriba.muscletrack.network.model.response.ExerciseData
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
@@ -15,7 +14,8 @@ class ExerciseDetailRepositoryImpl(
 
     private val client: HttpClient = clientProvider.privateClient
 
-    override suspend fun getExerciseDetails(id: String): ExerciseDetailsData? {
+    /*
+    override suspend fun getExerciseDetails(id: String): ExerciseData? {
         return try {
             client.get("${ApiRoutes.BASE_URL}${ApiRoutes.Exercises.detail(id)}").body()
         } catch (e: Exception) {
@@ -31,5 +31,5 @@ class ExerciseDetailRepositoryImpl(
             e.printStackTrace()
             emptyList()
         }
-    }
+    }*/
 }

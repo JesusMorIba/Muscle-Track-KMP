@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jmoriba.muscletrack.designsystem.theme.Green
 import com.jmoriba.muscletrack.designsystem.theme.Orange
-import com.jmoriba.muscletrack.domain.models.WorkoutModelUI
+import com.jmoriba.muscletrack.network.model.response.WorkoutData
 import muscletrack.composeapp.generated.resources.Res
 import muscletrack.composeapp.generated.resources.ic_arrow_left
 import muscletrack.composeapp.generated.resources.ic_fire
@@ -30,8 +30,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun WorkoutItem (
-    workout: WorkoutModelUI,
-    onWorkoutClick: (workout: WorkoutModelUI) -> Unit
+    workout: WorkoutData,
+    onWorkoutClick: (workout: WorkoutData) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -96,10 +96,11 @@ fun WorkoutItem (
     }
 }
 
+/*
 @Preview
 @Composable
 fun WorkoutItemPreview() {
-    WorkoutItem(
+    WorkoutData(
         workout = WorkoutModelUI(
             id = "1",
             name = "Full-Body HIT Blast",
@@ -110,4 +111,4 @@ fun WorkoutItemPreview() {
         ),
         onWorkoutClick = {}
     )
-}
+}*/

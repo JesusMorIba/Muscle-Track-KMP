@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class WorkoutExerciseResponse(
     val id: String,
     val workoutId: String,
-    val exercise: ExerciseResponse,
+    val exercise: ExerciseData,
     val position: Int,
     val exerciseSets: List<ExerciseSetResponse> = emptyList()
 )

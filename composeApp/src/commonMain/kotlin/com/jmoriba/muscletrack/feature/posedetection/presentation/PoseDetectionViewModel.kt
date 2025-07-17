@@ -1,6 +1,5 @@
 package com.jmoriba.muscletrack.feature.posedetection.presentation
 
-import com.jmoriba.muscletrack.domain.models.WorkoutModelUI
 import com.jmoriba.muscletrack.common.utils.PermissionBridge
 import com.jmoriba.muscletrack.common.utils.PermissionResultCallback
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -8,7 +7,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import moe.tlaster.precompose.viewmodel.ViewModel
 
 data class PoseDetectionUiState(
-    val workouts: List<WorkoutModelUI?> = emptyList(),
     val isCameraPermissionGranted: Boolean = false
 )
 

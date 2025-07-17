@@ -20,18 +20,18 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.jmoriba.muscletrack.domain.models.WorkoutFilterUIState
 import androidx.compose.ui.Alignment
+import com.jmoriba.muscletrack.network.model.entities.WorkoutFilterEnum
 
 @Composable
 fun StatusTabs(
-    selectedFilter: WorkoutFilterUIState,
-    onFilterChange: (WorkoutFilterUIState) -> Unit
+    selectedFilter: WorkoutFilterEnum,
+    onFilterChange: (WorkoutFilterEnum) -> Unit
 ) {
     val tabs = listOf(
-        "All Workouts" to WorkoutFilterUIState.ALL_WORKOUTS,
-        "Completed" to WorkoutFilterUIState.COMPLETED,
-        "In Progress" to WorkoutFilterUIState.IN_PROGRESS
+        "All Workouts" to WorkoutFilterEnum.ALL_WORKOUTS,
+        "Completed" to WorkoutFilterEnum.COMPLETED,
+        "In Progress" to WorkoutFilterEnum.IN_PROGRESS
     )
 
     Row(

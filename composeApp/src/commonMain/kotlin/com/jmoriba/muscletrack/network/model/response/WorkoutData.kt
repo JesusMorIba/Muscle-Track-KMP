@@ -3,7 +3,7 @@ package com.jmoriba.muscletrack.network.model.response
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class WorkoutResponse(
+data class WorkoutData(
     val id: String,
     val userId: String,
     val name: String,

@@ -94,6 +94,7 @@ kotlin {
             // Ktor
             implementation(libs.ktor.client.core)
             implementation(libs.kotlinx.coroutines.core)
+            implementation("io.ktor:ktor-client-content-negotiation:2.3.0")
             implementation(libs.ktor.serialization)
 
             // Chart

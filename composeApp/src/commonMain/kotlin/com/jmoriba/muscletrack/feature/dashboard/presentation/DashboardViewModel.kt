@@ -1,7 +1,8 @@
 package com.jmoriba.muscletrack.feature.dashboard.presentation
 
+import com.jmoriba.muscletrack.common.utils.ErrorHandler
 import com.jmoriba.muscletrack.common.utils.Resource
-import com.jmoriba.muscletrack.network.model.response.DashboardResponse
+import com.jmoriba.muscletrack.network.model.response.DashboardData
 import com.jmoriba.muscletrack.network.repository.DashboardRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,15 +31,22 @@ class DashboardViewModel(private val repository: DashboardRepository) : ViewMode
         viewModelScope.launch {
             _uiState.update { it.copy(dashboardData = Resource.Loading) }
 
-            val result = repository.getDashboardData()
+            try {
+                val result = repository.getDashboardData()
 
-            _uiState.update { it.copy(dashboardData = result) }
+                _uiState.update { it.copy(dashboardData = Resource.Success(result)) }
+
+            } catch (e: Exception) {
+                val error = ErrorHandler.handleException(e)
+                _uiState.update { it.copy(dashboardData = Resource.Error(error)) }
+            }
         }
     }
+
 }
 
 data class DashboardUiState(
-    val dashboardData: Resource<DashboardResponse> = Resource.Loading
+    val dashboardData: Resource<DashboardData> = Resource.Loading
 )
 
 sealed interface DashboardEvent {

@@ -10,6 +10,10 @@ object ApiRoutes {
         const val Logout = "/auth/logout"
     }
 
+    object Dashboard {
+        const val Stats = "/workouts/stats"
+    }
+
     object User {
         const val Profile = "/user/profile"
         const val UpdateProfile = "/user/update"

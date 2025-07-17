@@ -1,7 +1,6 @@
 package com.jmoriba.muscletrack.domain.repository
 
 import com.jmoriba.muscletrack.network.repository.AuthRepository
-import com.jmoriba.muscletrack.domain.models.AuthResultUIState
 import com.jmoriba.muscletrack.network.api.HttpClientProvider
 
 class AuthRepositoryImpl(clientProvider: HttpClientProvider) : AuthRepository {

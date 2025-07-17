@@ -1,8 +1,10 @@
 package com.jmoriba.muscletrack.feature.workout.presentation
 
-import com.jmoriba.muscletrack.data.models.response.WorkoutSummaryData
+import com.jmoriba.muscletrack.common.utils.ErrorHandler
+import com.jmoriba.muscletrack.common.utils.Resource
+import com.jmoriba.muscletrack.network.model.entities.WorkoutFilterEnum
+import com.jmoriba.muscletrack.network.model.response.WorkoutData
 import com.jmoriba.muscletrack.network.repository.WorkoutRepository
-import com.jmoriba.muscletrack.domain.models.WorkoutFilterUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -24,9 +26,17 @@ class WorkoutViewModel(private val repository: WorkoutRepository) : ViewModel() 
         }
     }
 
-    private fun onFilterChanged(newFilter: WorkoutFilterUIState) {
+    private fun onFilterChanged(newFilter: WorkoutFilterEnum) {
         _uiState.update { state ->
-            val filtered = filterWorkouts(state.allWorkouts, newFilter)
+            val filtered = when (val data = state.allWorkouts) {
+                is Resource.Success -> {
+                    val workouts = data.data
+                    Resource.Success(filterWorkouts(workouts, newFilter))
+                }
+                is Resource.Error -> Resource.Error(data.error)
+                is Resource.Loading -> Resource.Loading
+            }
+
             state.copy(
                 selectedFilter = newFilter,
                 filteredWorkouts = filtered
@@ -36,32 +46,46 @@ class WorkoutViewModel(private val repository: WorkoutRepository) : ViewModel() 
 
     private fun getWorkouts() {
         viewModelScope.launch {
-            val result = repository.getWorkouts()
-            _uiState.update { state ->
-                val filtered = filterWorkouts(result, state.selectedFilter)
-                state.copy(
-                    allWorkouts = result,
-                    filteredWorkouts = filtered
-                )
+            _uiState.update { it.copy(allWorkouts = Resource.Loading) }
+
+            try {
+                val result = repository.getWorkouts()
+
+                val filtered = filterWorkouts(result, _uiState.value.selectedFilter)
+
+                _uiState.update {
+                    it.copy(
+                        allWorkouts = Resource.Success(result),
+                        filteredWorkouts = Resource.Success(filtered)
+                    )
+                }
+            } catch (e: Exception) {
+                val error = ErrorHandler.handleException(e)
+                _uiState.update {
+                    it.copy(
+                        allWorkouts = Resource.Error(error),
+                        filteredWorkouts = Resource.Error(error)
+                    )
+                }
             }
         }
     }
 
-    private fun filterWorkouts(workouts: List<WorkoutSummaryData>, filter: WorkoutFilterUIState): List<WorkoutSummaryData> {
+    private fun filterWorkouts(workouts: List<WorkoutData>, filter: WorkoutFilterEnum): List<WorkoutData> {
         return when (filter) {
-            WorkoutFilterUIState.ALL_WORKOUTS -> workouts
-            WorkoutFilterUIState.COMPLETED -> workouts.filter { it.isCompleted }
-            WorkoutFilterUIState.IN_PROGRESS -> workouts.filter { !it.isCompleted }
+            WorkoutFilterEnum.ALL_WORKOUTS -> workouts
+            WorkoutFilterEnum.COMPLETED -> workouts.filter { it.isCompleted }
+            WorkoutFilterEnum.IN_PROGRESS -> workouts.filter { !it.isCompleted }
         }
     }
 }
 
 data class WorkoutUiState(
-    val allWorkouts: List<WorkoutSummaryData> = emptyList(),
-    val filteredWorkouts: List<WorkoutSummaryData> = emptyList(),
-    val selectedFilter: WorkoutFilterUIState = WorkoutFilterUIState.ALL_WORKOUTS
+    val allWorkouts: Resource<List<WorkoutData>> = Resource.Loading,
+    val filteredWorkouts: Resource<List<WorkoutData>> = Resource.Loading,
+    val selectedFilter: WorkoutFilterEnum = WorkoutFilterEnum.ALL_WORKOUTS
 )
 
 sealed interface WorkoutEvent {
-    data class FilterChanged(val filter: WorkoutFilterUIState) : WorkoutEvent
+    data class FilterChanged(val filter: WorkoutFilterEnum) : WorkoutEvent
 }

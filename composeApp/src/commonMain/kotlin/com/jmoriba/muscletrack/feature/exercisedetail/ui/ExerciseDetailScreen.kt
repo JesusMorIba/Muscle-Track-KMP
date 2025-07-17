@@ -54,21 +54,21 @@ fun ExerciseDetailScreen(
                     .padding(horizontal = spacingS())
             ) {
 
-                uiState.selectedExercise?.let { exercise ->
-                    ExerciseProgressCard(exerciseData = exercise)
-                }
+                /*
+
+                ExerciseProgressCard(exerciseData = uiState.selectedExercise)
 
                 Spacer(modifier = Modifier.height(spacingS()))
 
-                uiState.selectedExercise?.let { exercise ->
-                    ExerciseDetailCard(exercise = exercise)
-                }
+                ExerciseDetailCard(exercise = uiState.selectedExercise)
 
                 Spacer(modifier = Modifier.height(spacingS()))
 
                 ExerciseWorkoutHistoryCard(workouts = uiState.workoutHistory.filterNotNull())
 
                 Spacer(modifier = Modifier.height(spacingS()))
+
+                 */
             }
         }
     }

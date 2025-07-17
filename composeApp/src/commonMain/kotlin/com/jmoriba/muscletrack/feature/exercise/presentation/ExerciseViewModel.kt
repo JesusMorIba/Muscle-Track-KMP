@@ -1,8 +1,9 @@
 package com.jmoriba.muscletrack.feature.exercise.presentation
 
-import com.jmoriba.muscletrack.data.models.entities.Equipment
-import com.jmoriba.muscletrack.data.models.response.ExerciseData
-import com.jmoriba.muscletrack.data.models.entities.MuscleGroup
+import com.jmoriba.muscletrack.common.utils.Resource
+import com.jmoriba.muscletrack.network.model.entities.EquipmentEnum
+import com.jmoriba.muscletrack.network.model.entities.MuscleEnum
+import com.jmoriba.muscletrack.network.model.response.ExerciseData
 import com.jmoriba.muscletrack.network.repository.ExerciseRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,7 +30,7 @@ class ExerciseViewModel(private val repository: ExerciseRepository) : ViewModel(
         viewModelScope.launch {
             val result = repository.getExercises()
             _uiState.update { state ->
-                state.copy(allExercises = result ?: emptyList())
+                state.copy(allExercises = Resource.Success(result?.exercises ?: emptyList()))
             }
             applyFilters()
         }
@@ -40,40 +41,44 @@ class ExerciseViewModel(private val repository: ExerciseRepository) : ViewModel(
         applyFilters()
     }
 
-    fun onMuscleGroupSelected(group: MuscleGroup?) {
+    fun onMuscleGroupSelected(group: MuscleEnum?) {
         _uiState.update { it.copy(selectedMuscleGroup = group) }
         applyFilters()
     }
 
-    fun onEquipmentSelected(equipment: Equipment?) {
+    fun onEquipmentSelected(equipment: EquipmentEnum?) {
         _uiState.update { it.copy(selectedEquipment = equipment) }
         applyFilters()
     }
 
     private fun applyFilters() {
         _uiState.update { state ->
-            val filtered = state.allExercises.filter { exercise ->
+            val allExercises = (state.allExercises as? Resource.Success)?.data ?: emptyList()
+
+            val filtered = allExercises.filter { exercise ->
                 val matchesMuscleGroup = state.selectedMuscleGroup == null ||
-                        exercise.primaryMuscle.displayName.equals(state.selectedMuscleGroup.name, ignoreCase = true)
+                        exercise.primaryMuscle.name.equals(state.selectedMuscleGroup.name, ignoreCase = true)
 
                 val matchesEquipment = state.selectedEquipment == null ||
-                        exercise.equipment.equals(state.selectedEquipment.name, ignoreCase = true)
+                        exercise.equipment.name.equals(state.selectedEquipment.name, ignoreCase = true)
 
                 val matchesSearchQuery = state.searchQuery.isBlank() ||
                         exercise.name.contains(state.searchQuery, ignoreCase = true)
 
                 matchesMuscleGroup && matchesEquipment && matchesSearchQuery
             }
+
             state.copy(filteredExercises = filtered)
         }
     }
+
 }
 
 data class ExerciseUiState(
-    val allExercises: List<ExerciseData> = emptyList(),
+    val allExercises: Resource<List<ExerciseData>> = Resource.Loading,
     val filteredExercises: List<ExerciseData> = emptyList(),
-    val selectedMuscleGroup: MuscleGroup? = null,
-    val selectedEquipment: Equipment? = null,
+    val selectedMuscleGroup: MuscleEnum? = null,
+    val selectedEquipment: EquipmentEnum? = null,
     val searchQuery: String = ""
 )
 

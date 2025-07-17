@@ -18,10 +18,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.jmoriba.muscletrack.data.models.response.WorkoutExerciseData
+import com.jmoriba.muscletrack.network.model.response.WorkoutData
 
 @Composable
-fun WorkoutRow(workout: WorkoutExerciseData) {
+fun WorkoutRow(workout: WorkoutData) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -41,13 +41,13 @@ fun WorkoutRow(workout: WorkoutExerciseData) {
             overflow = TextOverflow.Ellipsis
         )
         Text(
-            text = workout.totalSets.toString(),
+            text = workout.workoutExercises.toString(),
             modifier = Modifier.weight(0.8f),
             fontSize = 14.sp,
             textAlign = TextAlign.Center
         )
         Text(
-            text = workout.maxWeight.toString(),
+            text = workout.workoutExercises.toString(),
             modifier = Modifier.weight(1f),
             fontSize = 14.sp,
             textAlign = TextAlign.Center

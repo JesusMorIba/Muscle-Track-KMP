@@ -7,7 +7,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class DashboardResponse(
+data class DashboardData(
     @SerialName("stats")
     val stats: WorkoutStats,
     @SerialName("muscle_stats")

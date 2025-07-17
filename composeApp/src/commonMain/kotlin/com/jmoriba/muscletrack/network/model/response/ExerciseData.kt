@@ -4,7 +4,7 @@ import com.jmoriba.muscletrack.network.model.entities.MuscleEnum
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ExerciseResponse(
+data class ExerciseData(
     val id: String,
     val name: String,
     val equipment: EquipmentResponse,

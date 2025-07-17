@@ -1,6 +1,6 @@
 package com.jmoriba.muscletrack.feature.workoutdetail.presentation
 
-import com.jmoriba.muscletrack.data.models.response.WorkoutData
+import com.jmoriba.muscletrack.network.model.response.WorkoutData
 import com.jmoriba.muscletrack.network.repository.WorkoutRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,7 +35,7 @@ class ReportDetailViewModel(private val repository: WorkoutRepository) : ViewMod
 }
 
 data class WorkoutDetailUiState(
-    val workout: WorkoutData ? = null,
+    val workout: WorkoutData? = null,
     val id: Int = 0
 )
 

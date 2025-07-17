@@ -54,30 +54,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.aay.compose.baseComponents.model.GridOrientation
-import com.aay.compose.lineChart.LineChart
-import com.aay.compose.lineChart.model.LineParameters
-import com.aay.compose.lineChart.model.LineType
 import com.aay.compose.radarChart.RadarChart
 import com.aay.compose.radarChart.model.NetLinesStyle
 import com.aay.compose.radarChart.model.Polygon
 import com.aay.compose.radarChart.model.PolygonStyle
-import com.jmoriba.muscletrack.data.models.response.DashboardData
-import com.jmoriba.muscletrack.data.models.response.ExerciseData
-import com.jmoriba.muscletrack.data.models.response.ExerciseDetailsData
-import com.jmoriba.muscletrack.data.models.response.WorkoutData
-import com.jmoriba.muscletrack.data.models.response.WorkoutExerciseData
-import com.jmoriba.muscletrack.data.models.response.WorkoutSummaryData
-import com.jmoriba.muscletrack.data.models.response.progress
-import com.jmoriba.muscletrack.data.models.response.progress_chart_data
 import com.jmoriba.muscletrack.designsystem.component.badge.StatusBadge
 import com.jmoriba.muscletrack.designsystem.component.item.DashboardStatItem
 import com.jmoriba.muscletrack.designsystem.component.item.WorkoutItem
-import com.jmoriba.muscletrack.designsystem.component.placeholder.EmptyExerciseProgress
-import com.jmoriba.muscletrack.designsystem.component.progressbar.ProgressBar
 import com.jmoriba.muscletrack.designsystem.component.row.WorkoutRow
 import com.jmoriba.muscletrack.designsystem.theme.Grey200Color
-import com.jmoriba.muscletrack.designsystem.theme.PrimaryColor
+import com.jmoriba.muscletrack.network.model.response.DashboardData
+import com.jmoriba.muscletrack.network.model.response.ExerciseData
+import com.jmoriba.muscletrack.network.model.response.RecentWorkout
+import com.jmoriba.muscletrack.network.model.response.WorkoutData
+import com.jmoriba.muscletrack.network.model.response.getCompletionRate
 import muscletrack.composeapp.generated.resources.Res
 import muscletrack.composeapp.generated.resources.ic_category
 import muscletrack.composeapp.generated.resources.ic_equipment
@@ -86,7 +76,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun DashboardStatsCard(
-    stats: DashboardData,
+    dashboardData: DashboardData,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -102,15 +92,15 @@ fun DashboardStatsCard(
                 .padding(6.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            val completionPercentage =  (stats.completedWorkouts.toFloat() / stats.totalWorkouts.toFloat())
+            val completionPercentage =  (dashboardData.stats.getCompletionRate())
 
             val completionText = "${(completionPercentage * 100).toInt()}%"
 
             val items = listOf(
-                Triple("Total\nWorkouts", stats.totalWorkouts.toString(), "${stats.completedWorkouts} completed") to Pair(Icons.Filled.DateRange, Color(0xFF8B5CF6)),
-                Triple("Total\nExercises", stats.totalExercises.toString(), "${stats.exercisesWithPR} with PRs") to Pair(Icons.Filled.FitnessCenter, Color(0xFF8B5CF6)),
+                Triple("Total\nWorkouts", dashboardData.stats.totalWorkouts.toString(), "${dashboardData.stats.completedWorkouts} completed") to Pair(Icons.Filled.DateRange, Color(0xFF8B5CF6)),
+                Triple("Total\nExercises", dashboardData.stats.totalExercises.toString(), "${dashboardData.stats.exercisesWithPR} with PRs") to Pair(Icons.Filled.FitnessCenter, Color(0xFF8B5CF6)),
                 Triple("Completion\nRate", completionText, "") to Pair(Icons.Filled.CheckCircle, Color(0xFF10B981)),
-                Triple("Recent\nActivity", stats.recentActivity.toString(), "workouts in the\nlast 7 days") to Pair(Icons.Filled.Bolt, Color(0xFFFBBF24))
+                Triple("Recent\nActivity", dashboardData.stats.recentActivity.toString(), "workouts in the\nlast 7 days") to Pair(Icons.Filled.Bolt, Color(0xFFFBBF24))
             )
 
             items.forEachIndexed { index, (data, iconData) ->
@@ -201,8 +191,8 @@ fun MuscleGroupBalanceCard(
 
 @Composable
 fun RecentWorkoutsCard(
-    workouts: List<WorkoutData>,
-    onWorkoutClick: (WorkoutData) -> Unit,
+    workouts: List<RecentWorkout>,
+    onWorkoutClick: (RecentWorkout) -> Unit,
     onViewAllWorkouts: () -> Unit
 ) {
     Card(
@@ -259,7 +249,7 @@ fun RecentWorkoutsCard(
                     WorkoutItem(
                         title = workout.name,
                         date = workout.date,
-                        isCompleted = workout.isCompleted
+                        isCompleted = true
                     )
                     if (index != workouts.lastIndex) {
                         HorizontalDivider(
@@ -275,7 +265,7 @@ fun RecentWorkoutsCard(
 }
 
 @Composable
-fun WorkoutCard(workouts: List<WorkoutSummaryData>) {
+fun WorkoutCard(workouts: List<WorkoutData>, onWorkoutClick: (WorkoutData) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         workouts.forEach { workout ->
             Card(
@@ -293,7 +283,7 @@ fun WorkoutCard(workouts: List<WorkoutSummaryData>) {
                         verticalAlignment = Alignment.Top
                     ) {
                         Text(
-                            text = workout.workoutName,
+                            text = workout.name,
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.SemiBold
                             ),
@@ -350,7 +340,7 @@ fun WorkoutCard(workouts: List<WorkoutSummaryData>) {
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        items(workout.tags ?: emptyList()) { tag ->
+                        items(workout.workoutTags) { tag ->
                             tag.let {
                                 Box(
                                     modifier = Modifier
@@ -361,7 +351,7 @@ fun WorkoutCard(workouts: List<WorkoutSummaryData>) {
                                         .padding(horizontal = 8.dp, vertical = 4.dp)
                                 ) {
                                     Text(
-                                        text = it,
+                                        text = it.name,
                                         style = MaterialTheme.typography.labelSmall,
                                         color = Color(0xFF6366F1)
                                     )
@@ -387,7 +377,7 @@ fun WorkoutCard(workouts: List<WorkoutSummaryData>) {
                                 modifier = Modifier.size(16.dp)
                             )
                             Text(
-                                text = "${workout.exerciseCount} exercises",
+                                text = "${workout.workoutExercises} exercises",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = Color(0xFF6B7280)
                             )
@@ -404,7 +394,7 @@ fun WorkoutCard(workouts: List<WorkoutSummaryData>) {
                                 modifier = Modifier.size(16.dp)
                             )
                             Text(
-                                text = "${workout.setCount} sets",
+                                text = "${workout.workoutExercises} sets",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = Color(0xFF6B7280)
                             )
@@ -497,7 +487,7 @@ fun ExerciseCard(
                                 .padding(horizontal = 8.dp, vertical = 2.dp)
                         ) {
                             Text(
-                                text = exercise.primaryMuscle.displayName,
+                                text = exercise.primaryMuscle.name,
                                 style = MaterialTheme.typography.labelSmall,
                                 color = Color(0xFF6366F1)
                             )
@@ -533,7 +523,7 @@ fun ExerciseCard(
                             modifier = Modifier.size(16.dp)
                         )
                         Text(
-                            text = exercise.category,
+                            text = exercise.category.name,
                             style = MaterialTheme.typography.bodySmall,
                             color = Color(0xFF6B7280)
                         )
@@ -546,7 +536,7 @@ fun ExerciseCard(
                                 modifier = Modifier.size(16.dp)
                             )
                             Text(
-                                text = equipment,
+                                text = equipment.name,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = Color(0xFF6B7280)
                             )
@@ -555,6 +545,7 @@ fun ExerciseCard(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
+                    /*
                     if (exercise.progress > 0f) {
 
                         Text(
@@ -624,7 +615,7 @@ fun ExerciseCard(
                                 modifier = Modifier.size(20.dp)
                             )
                         }
-                    }
+                    }*/
                 }
             }
         }
@@ -634,7 +625,7 @@ fun ExerciseCard(
 @OptIn(ExperimentalLayoutApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun ExerciseDetailCard(
-    exercise: ExerciseDetailsData,
+    exercise: ExerciseData,
     modifier: Modifier = Modifier)
 {
     Card(
@@ -662,7 +653,7 @@ fun ExerciseDetailCard(
             FilterChip(
                 selected = false,
                 onClick = {},
-                label = { Text(exercise.primaryMuscle.displayName) }
+                label = { Text(exercise.primaryMuscle.name) }
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -672,29 +663,31 @@ fun ExerciseDetailCard(
                 modifier = Modifier.padding(vertical = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                exercise.secondaryMuscles?.forEach { muscle ->
+                exercise.secondaryMuscles.forEach { muscle ->
                     FilterChip(
                         selected = false,
                         onClick = {},
-                        label = { Text(muscle.displayName) }
+                        label = { Text(muscle.name) }
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
             Text("Category", style = MaterialTheme.typography.labelMedium, color = Color.Gray)
-            Text(exercise.category, style = MaterialTheme.typography.bodyMedium)
+            Text(exercise.category.name, style = MaterialTheme.typography.bodyMedium)
 
             Spacer(modifier = Modifier.height(8.dp))
             Text("Equipment", style = MaterialTheme.typography.labelMedium, color = Color.Gray)
-            Text(exercise.equipment, style = MaterialTheme.typography.bodyMedium)
+            Text(exercise.equipment.name, style = MaterialTheme.typography.bodyMedium)
 
             Spacer(modifier = Modifier.height(12.dp))
             Text("Performance", style = MaterialTheme.typography.labelMedium, color = Color.Gray)
+
+            /*
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Personal Record", modifier = Modifier.weight(1f))
                 Text("${exercise.latestPr ?: 0} kg", color = Color(0xFF4CAF50), fontWeight = FontWeight.SemiBold)
-            }
+            }*/
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Target", modifier = Modifier.weight(1f))
@@ -703,6 +696,7 @@ fun ExerciseDetailCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            /*
             if (exercise.progress_chart_data > 0f) {
 
                 Text(
@@ -735,16 +729,18 @@ fun ExerciseDetailCard(
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
+
+             */
             }
-        }
     }
 }
 
 @Composable
 fun ExerciseProgressCard(
-    exerciseData: ExerciseDetailsData,
+    exerciseData: ExerciseData,
     modifier: Modifier = Modifier
 ) {
+    /*
     val progressData = exerciseData.progress.filterNotNull()
 
     Card(
@@ -892,12 +888,14 @@ fun ExerciseProgressCard(
             }
         }
     }
+
+     */
 }
 
 
 @Composable
 fun ExerciseWorkoutHistoryCard(
-    workouts: List<WorkoutExerciseData>
+    workouts: List<WorkoutData>
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),

@@ -1,7 +1,6 @@
 package com.jmoriba.muscletrack.feature.auth.presentation
 
 import com.jmoriba.muscletrack.network.repository.AuthRepository
-import com.jmoriba.muscletrack.domain.models.AuthResultUIState
 import com.jmoriba.muscletrack.domain.models.TextFieldUiState
 import com.jmoriba.muscletrack.common.utils.ValidatorUtils
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -89,6 +88,7 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
 
         _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
+        /*
         viewModelScope.launch {
             when (val result = repository.signIn(state.email.text, state.password.text)) {
                 is AuthResultUIState.Success -> _uiState.update {
@@ -99,7 +99,7 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
                 }
                 else -> Unit
             }
-        }
+        }*/
     }
 
     fun register() {
@@ -128,6 +128,7 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
 
         _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
+        /*
         viewModelScope.launch {
             when (val result = repository.signUp(state.email.text, state.password.text)) {
                 is AuthResultUIState.Success -> _uiState.update {
@@ -138,7 +139,7 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
                 }
                 else -> Unit
             }
-        }
+        }*/
     }
 
     fun forgotPassword() {
@@ -153,6 +154,7 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
 
         _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
+        /*
         viewModelScope.launch {
             when (val result = repository.resetPassword(state.email.text)) {
                 is AuthResultUIState.Success -> _uiState.update {
@@ -164,6 +166,7 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
                 else -> Unit
             }
         }
+         */
     }
 }
 
