@@ -1,9 +1,9 @@
 package com.jmoriba.muscletrack.feature.auth.presentation
 
-import com.jmoriba.muscletrack.data.repository.AuthRepository
+import com.jmoriba.muscletrack.network.repository.AuthRepository
 import com.jmoriba.muscletrack.domain.models.AuthResultUIState
 import com.jmoriba.muscletrack.domain.models.TextFieldUiState
-import com.jmoriba.muscletrack.utils.ValidatorUtils
+import com.jmoriba.muscletrack.common.utils.ValidatorUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

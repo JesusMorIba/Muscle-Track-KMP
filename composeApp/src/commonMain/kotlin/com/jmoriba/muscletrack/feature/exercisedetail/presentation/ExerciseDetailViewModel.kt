@@ -2,7 +2,7 @@ package com.jmoriba.muscletrack.feature.exercisedetail.presentation
 
 import com.jmoriba.muscletrack.data.models.response.ExerciseDetailsData
 import com.jmoriba.muscletrack.data.models.response.WorkoutExerciseData
-import com.jmoriba.muscletrack.data.repository.ExerciseDetailRepository
+import com.jmoriba.muscletrack.network.repository.ExerciseDetailRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch

@@ -1,7 +1,7 @@
 package com.jmoriba.muscletrack.feature.workout.presentation
 
 import com.jmoriba.muscletrack.data.models.response.WorkoutSummaryData
-import com.jmoriba.muscletrack.data.repository.WorkoutRepository
+import com.jmoriba.muscletrack.network.repository.WorkoutRepository
 import com.jmoriba.muscletrack.domain.models.WorkoutFilterUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

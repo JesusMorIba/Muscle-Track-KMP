@@ -1,6 +1,6 @@
 package com.jmoriba.muscletrack.di
 
-import com.jmoriba.muscletrack.data.repository.WorkoutRepository
+import com.jmoriba.muscletrack.network.repository.WorkoutRepository
 import com.jmoriba.muscletrack.domain.repository.WorkoutRepositoryImpl
 import com.jmoriba.muscletrack.feature.auth.presentation.AuthViewModel
 import com.jmoriba.muscletrack.feature.dashboard.presentation.DashboardViewModel

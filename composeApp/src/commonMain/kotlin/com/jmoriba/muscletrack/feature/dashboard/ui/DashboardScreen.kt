@@ -50,14 +50,11 @@ fun DashboardScreen(viewModel : DashboardViewModel, onWorkoutClick: (WorkoutData
 
                 Spacer(modifier = Modifier.height(spacingS()))
 
-                if (uiState.muscleValues.isNotEmpty()) {
-                    MuscleGroupBalanceCard(
-                        radarLabels = MuscleGroup.entries.map { it.displayName },
-                        muscleValues = uiState.muscleValues
-                    )
-                } else {
-                    CircularProgressIndicator()
-                }
+                MuscleGroupBalanceCard(
+                    radarLabels = MuscleGroup.entries.map { it.displayName },
+                    muscleValues = uiState.muscleValues
+                )
+
 
                 Spacer(modifier = Modifier.height(spacingS()))
 

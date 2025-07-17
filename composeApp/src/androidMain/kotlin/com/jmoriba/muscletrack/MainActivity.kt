@@ -10,9 +10,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
-import com.jmoriba.muscletrack.utils.PermissionBridge
-import com.jmoriba.muscletrack.utils.PermissionResultCallback
-import com.jmoriba.muscletrack.utils.PermissionsBridgeListener
+import com.jmoriba.muscletrack.common.utils.PermissionBridge
+import com.jmoriba.muscletrack.common.utils.PermissionResultCallback
+import com.jmoriba.muscletrack.common.utils.PermissionsBridgeListener
 import org.koin.core.context.GlobalContext
 
 class MainActivity : ComponentActivity(), PermissionsBridgeListener {

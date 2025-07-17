@@ -1,18 +1,14 @@
 package com.jmoriba.muscletrack.domain.repository
 
-import com.jmoriba.muscletrack.data.repository.AuthRepository
+import com.jmoriba.muscletrack.network.repository.AuthRepository
 import com.jmoriba.muscletrack.domain.models.AuthResultUIState
-import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.auth.auth
-import io.github.jan.supabase.auth.providers.builtin.Email
-import io.github.jan.supabase.auth.user.UserInfo
-import io.github.jan.supabase.exceptions.RestException
+import com.jmoriba.muscletrack.network.api.HttpClientProvider
 
-class AuthRepositoryImpl(private val supabaseClient: SupabaseClient) : AuthRepository {
+class AuthRepositoryImpl(clientProvider: HttpClientProvider) : AuthRepository {
 
-    private val auth = supabaseClient.auth
+    private val client = clientProvider.privateClient
 
-    override suspend fun signIn(email: String, password: String): AuthResultUIState {
+   /* override suspend fun signIn(email: String, password: String): AuthResultUIState {
         return try {
             auth.signInWith(Email) {
                 this.email = email
@@ -64,9 +60,9 @@ class AuthRepositoryImpl(private val supabaseClient: SupabaseClient) : AuthRepos
         } catch (e: Exception) {
             null
         }
-    }
+    } */
 
     override suspend fun isUserLoggedIn(): Boolean {
-        return auth.currentSessionOrNull() != null
+        return false
     }
 }

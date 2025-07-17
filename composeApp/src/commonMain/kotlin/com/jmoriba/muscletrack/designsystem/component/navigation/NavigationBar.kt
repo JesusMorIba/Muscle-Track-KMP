@@ -7,7 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import com.jmoriba.muscletrack.navigation.AppRoute
+import com.jmoriba.muscletrack.navigation.AppRoutes
 import moe.tlaster.precompose.navigation.Navigator
 import org.jetbrains.compose.resources.painterResource
 
@@ -15,14 +15,14 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun NavigationBar(navigator: Navigator) {
     val currentRoute = navigator.currentEntry.collectAsState(null).value?.route?.route
-    val currentAppRoute = AppRoute.fromRoute(currentRoute)
+    val currentAppRoutes = AppRoutes.fromRoute(currentRoute)
 
-    if (currentAppRoute?.showBottomBar == true) {
+    if (currentAppRoutes?.showBottomBar == true) {
         NavigationBar(
             modifier = Modifier.fillMaxWidth(),
             containerColor = Color.White
         ) {
-            AppRoute.bottomNavItems.forEach { navigationItem ->
+            AppRoutes.bottomNavItems.forEach { navigationItem ->
                 NavigationBarItem(
                     selected = currentRoute == navigationItem.route,
                     onClick = {

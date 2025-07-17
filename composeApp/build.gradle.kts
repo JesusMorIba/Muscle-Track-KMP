@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -7,20 +6,10 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     kotlin("plugin.serialization") version "2.0.0"
-    id("app.cash.sqldelight") version "2.0.2"
-}
-
-sqldelight {
-    databases {
-        create("MuscleTrackDatabase") {
-            packageName.set("com.jmoriba.muscletrack.db")
-        }
-    }
 }
 
 kotlin {
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
@@ -106,10 +95,6 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.ktor.serialization)
-
-            // Supabase
-            implementation("io.github.jan-tennert.supabase:postgrest-kt:3.1.4")
-            implementation("io.github.jan-tennert.supabase:auth-kt:3.1.4")
 
             // Chart
             implementation("io.github.thechance101:chart:1.1.0")

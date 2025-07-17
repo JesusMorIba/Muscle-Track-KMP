@@ -1,65 +1,31 @@
 package com.jmoriba.muscletrack.domain.repository
 
-import com.jmoriba.muscletrack.data.models.response.DashboardData
-import com.jmoriba.muscletrack.data.models.response.MuscleGroupStatData
-import com.jmoriba.muscletrack.data.models.response.WorkoutData
-import com.jmoriba.muscletrack.data.repository.DashboardRepository
-import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.postgrest.from
-import io.github.jan.supabase.postgrest.postgrest
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
-import kotlinx.datetime.minus
-import kotlinx.datetime.DatePeriod
+import com.jmoriba.muscletrack.common.utils.AppError
+import com.jmoriba.muscletrack.common.utils.ErrorHandler
+import com.jmoriba.muscletrack.common.utils.Resource
+import com.jmoriba.muscletrack.network.api.ApiRoutes
+import com.jmoriba.muscletrack.network.api.HttpClientProvider
+import com.jmoriba.muscletrack.network.model.response.DashboardResponse
+import com.jmoriba.muscletrack.network.repository.DashboardRepository
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.request.url
 
-class DashboardRepositoryImpl(private val supabaseClient: SupabaseClient) : DashboardRepository {
+class DashboardRepositoryImpl(
+    clientProvider: HttpClientProvider
+) : DashboardRepository {
 
-    override suspend fun getDashboardData(): DashboardData? {
+    private val client = clientProvider.privateClient
+
+    override suspend fun getDashboardData(): Resource<DashboardResponse> {
         return try {
-            val response = supabaseClient.postgrest
-                .rpc("get_dashboard_data")
-                .decodeAs<DashboardData>()
-
-            response
+            val response: DashboardResponse = client.get {
+                url("${ApiRoutes.BASE_URL}${ApiRoutes.Workouts.All}")
+            }.body()
+            Resource.Success(response)
         } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
-    }
-
-    override suspend fun getMuscleGroupBalance(): List<MuscleGroupStatData?> {
-        return try {
-            val response = supabaseClient.postgrest
-                .rpc("get_all_muscle_stats")
-                .decodeList<MuscleGroupStatData>()
-
-            response
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emptyList()
-        }
-    }
-
-    override suspend fun getRecentWorkouts(): List<WorkoutData?> {
-        return try {
-
-            val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
-            val sevenDaysAgo = now.minus(DatePeriod(days = 7)).toString()
-
-            val response = supabaseClient
-                .from("workout")
-                .select {
-                    filter {
-                        gte("date", sevenDaysAgo)
-                    }
-                }
-                .decodeList<WorkoutData>()
-
-            response
-        } catch (e: Exception) {
-            e.printStackTrace()
-            emptyList()
+            val error = ErrorHandler.handleException(e)
+            Resource.Error(error)
         }
     }
 }

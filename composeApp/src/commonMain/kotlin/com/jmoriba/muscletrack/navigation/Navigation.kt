@@ -28,10 +28,10 @@ fun Navigation(navigator: Navigator) {
 
     NavHost(
         navigator = navigator,
-        initialRoute = AppRoute.Dashboard.route,
+        initialRoute = AppRoutes.Dashboard.route,
         navTransition = NavTransition()
     ) {
-        scene(route = AppRoute.Login.route) {
+        scene(route = AppRoutes.Login.route) {
 
             val viewModel = koinViewModel(AuthViewModel::class) { parametersOf() }
 
@@ -42,7 +42,7 @@ fun Navigation(navigator: Navigator) {
             )
         }
 
-        scene(route = AppRoute.Dashboard.route) {
+        scene(route = AppRoutes.Dashboard.route) {
             val viewModel = koinViewModel(DashboardViewModel::class) { parametersOf() }
 
             DashboardScreen(
@@ -51,12 +51,12 @@ fun Navigation(navigator: Navigator) {
                     navigator.navigate("detail/${workout.id}")
                 },
                 onViewAllWorkouts = {
-                    navigator.navigate(AppRoute.Workouts.route)
+                    navigator.navigate(AppRoutes.Workouts.route)
                 }
             )
         }
 
-        scene(route = AppRoute.Workouts.route) {
+        scene(route = AppRoutes.Workouts.route) {
             val viewModel = koinViewModel(WorkoutViewModel::class) { parametersOf() }
 
             WorkoutScreen(
@@ -67,7 +67,7 @@ fun Navigation(navigator: Navigator) {
             )
         }
 
-        scene(route = AppRoute.Exercises.route) {
+        scene(route = AppRoutes.Exercises.route) {
             val viewModel = koinViewModel(ExerciseViewModel::class) { parametersOf() }
 
             ExerciseScreen(
@@ -78,7 +78,7 @@ fun Navigation(navigator: Navigator) {
             )
         }
 
-        scene(route = AppRoute.Detection.route) {
+        scene(route = AppRoutes.Detection.route) {
 
             val viewModel = koinViewModel(PoseDetectionViewModel::class) { parametersOf() }
 
@@ -87,11 +87,11 @@ fun Navigation(navigator: Navigator) {
             )
         }
 
-        scene(route = AppRoute.Settings.route) {
+        scene(route = AppRoutes.Settings.route) {
             SettingScreen()
         }
 
-        scene(route = AppRoute.WorkoutDetail.route) { backStackEntry ->
+        scene(route = AppRoutes.WorkoutDetail.route) { backStackEntry ->
             val workoutId = backStackEntry.path<String>("id")
 
             if (workoutId != null) {
@@ -104,7 +104,7 @@ fun Navigation(navigator: Navigator) {
             }
         }
 
-        scene(route = AppRoute.ExerciseDetail.route) { backStackEntry ->
+        scene(route = AppRoutes.ExerciseDetail.route) { backStackEntry ->
             val exerciseId = backStackEntry.path<String>("id")
 
             if (exerciseId != null) {

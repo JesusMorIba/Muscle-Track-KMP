@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.jmoriba.muscletrack.designsystem.component.navigation.NavigationBar
 import com.jmoriba.muscletrack.designsystem.theme.PrimaryColor
-import com.jmoriba.muscletrack.navigation.AppRoute
+import com.jmoriba.muscletrack.navigation.AppRoutes
 import com.jmoriba.muscletrack.navigation.Navigation
 import moe.tlaster.precompose.navigation.rememberNavigator
 import muscletrack.composeapp.generated.resources.Res
@@ -32,11 +32,11 @@ import org.jetbrains.compose.resources.painterResource
 fun MainScaffold() {
     val navigator = rememberNavigator()
     val currentRoute = navigator.currentEntry.collectAsState(null).value?.route?.route
-    val currentAppRoute = AppRoute.fromRoute(currentRoute)
+    val currentAppRoutes = AppRoutes.fromRoute(currentRoute)
 
     Scaffold(
         topBar = {
-            if (currentAppRoute?.title != null || currentAppRoute?.showBackButton == true) {
+            if (currentAppRoutes?.title != null || currentAppRoutes?.showBackButton == true) {
                 CenterAlignedTopAppBar(
                     title = {
                         Box(contentAlignment = Alignment.Center) {
@@ -49,14 +49,14 @@ fun MainScaffold() {
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = currentAppRoute.title.orEmpty(),
+                                    text = currentAppRoutes.title.orEmpty(),
                                     style = MaterialTheme.typography.headlineMedium
                                 )
                             }
                         }
                     },
                     navigationIcon = {
-                        if (currentAppRoute.showBackButton) {
+                        if (currentAppRoutes.showBackButton) {
                             IconButton(onClick = { navigator.goBack() }) {
                                 Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                             }
@@ -71,12 +71,12 @@ fun MainScaffold() {
             }
         },
         bottomBar = {
-            if (currentAppRoute?.showBottomBar == true) {
+            if (currentAppRoutes?.showBottomBar == true) {
                 NavigationBar(navigator = navigator)
             }
         },
         floatingActionButton = {
-            if (currentAppRoute?.showFloatingButton == true) {
+            if (currentAppRoutes?.showFloatingButton == true) {
                 IconButton(
                     onClick = { navigator.goBack() },
                     modifier = Modifier
