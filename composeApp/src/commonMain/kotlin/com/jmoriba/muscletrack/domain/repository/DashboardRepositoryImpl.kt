@@ -2,7 +2,7 @@ package com.jmoriba.muscletrack.domain.repository
 
 import com.jmoriba.muscletrack.network.api.ApiRoutes
 import com.jmoriba.muscletrack.network.api.HttpClientProvider
-import com.jmoriba.muscletrack.network.model.response.DashboardData
+import com.jmoriba.muscletrack.network.model.response.DashboardResponse
 import com.jmoriba.muscletrack.network.repository.DashboardRepository
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -14,7 +14,7 @@ class DashboardRepositoryImpl(
 
     private val client = clientProvider.privateClient
 
-    override suspend fun getDashboardData(): DashboardData {
+    override suspend fun getDashboardData(): DashboardResponse {
         return try {
             client.get {
                 url("${ApiRoutes.BASE_URL}${ApiRoutes.Dashboard.Stats}")

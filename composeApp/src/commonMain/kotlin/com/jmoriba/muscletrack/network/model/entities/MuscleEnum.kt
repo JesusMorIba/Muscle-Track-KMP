@@ -31,16 +31,16 @@ enum class MuscleEnum {
 
 fun MuscleEnum.getDisplayName(): String {
     return when (this) {
-        MuscleEnum.CHEST -> "Pecho"
-        MuscleEnum.BACK -> "Espalda"
-        MuscleEnum.SHOULDERS -> "Hombros"
-        MuscleEnum.BICEPS -> "Bíceps"
-        MuscleEnum.TRICEPS -> "Tríceps"
-        MuscleEnum.FOREARMS -> "Antebrazos"
-        MuscleEnum.ABS -> "Abdominales"
-        MuscleEnum.QUADS -> "Cuádriceps"
-        MuscleEnum.HAMSTRINGS -> "Isquiotibiales"
-        MuscleEnum.CALVES -> "Pantorrillas"
-        MuscleEnum.GLUTES -> "Glúteos"
+        MuscleEnum.CHEST -> "Chest"
+        MuscleEnum.BACK -> "Back"
+        MuscleEnum.SHOULDERS -> "Shoulders"
+        MuscleEnum.BICEPS -> "Biceps"
+        MuscleEnum.TRICEPS -> "Triceps"
+        MuscleEnum.FOREARMS -> "Forearms"
+        MuscleEnum.ABS -> "Abdominal"
+        MuscleEnum.QUADS -> "Quadriceps"
+        MuscleEnum.HAMSTRINGS -> "Hamstrings"
+        MuscleEnum.CALVES -> "Calves"
+        MuscleEnum.GLUTES -> "Glutes"
     }
 }

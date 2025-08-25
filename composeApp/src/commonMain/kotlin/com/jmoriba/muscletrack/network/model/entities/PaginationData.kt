@@ -1,4 +1,4 @@
-package com.jmoriba.muscletrack.network.model.response
+package com.jmoriba.muscletrack.network.model.entities
 
 import kotlinx.serialization.Serializable
 

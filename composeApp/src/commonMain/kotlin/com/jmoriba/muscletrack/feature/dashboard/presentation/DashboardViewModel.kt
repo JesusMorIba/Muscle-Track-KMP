@@ -2,7 +2,7 @@ package com.jmoriba.muscletrack.feature.dashboard.presentation
 
 import com.jmoriba.muscletrack.common.utils.ErrorHandler
 import com.jmoriba.muscletrack.common.utils.Resource
-import com.jmoriba.muscletrack.network.model.response.DashboardData
+import com.jmoriba.muscletrack.network.model.response.DashboardResponse
 import com.jmoriba.muscletrack.network.repository.DashboardRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -46,7 +46,7 @@ class DashboardViewModel(private val repository: DashboardRepository) : ViewMode
 }
 
 data class DashboardUiState(
-    val dashboardData: Resource<DashboardData> = Resource.Loading
+    val dashboardData: Resource<DashboardResponse> = Resource.Loading
 )
 
 sealed interface DashboardEvent {

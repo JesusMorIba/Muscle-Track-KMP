@@ -1,12 +1,8 @@
 package com.jmoriba.muscletrack.domain.repository
 
 import com.jmoriba.muscletrack.network.repository.ExerciseDetailRepository
-import com.jmoriba.muscletrack.network.api.ApiRoutes
 import com.jmoriba.muscletrack.network.api.HttpClientProvider
-import com.jmoriba.muscletrack.network.model.response.ExerciseData
 import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.request.*
 
 class ExerciseDetailRepositoryImpl(
     clientProvider: HttpClientProvider

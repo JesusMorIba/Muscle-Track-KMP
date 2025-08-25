@@ -11,7 +11,7 @@ object ApiRoutes {
     }
 
     object Dashboard {
-        const val Stats = "/workouts/stats"
+        const val Stats = "/dashboard"
     }
 
     object User {

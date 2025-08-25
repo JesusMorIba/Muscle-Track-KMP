@@ -1,8 +1,8 @@
 package com.jmoriba.muscletrack.network.repository
 
-import com.jmoriba.muscletrack.network.model.response.DashboardData
+import com.jmoriba.muscletrack.network.model.response.DashboardResponse
 
 interface DashboardRepository {
 
-    suspend fun getDashboardData(): DashboardData
+    suspend fun getDashboardData(): DashboardResponse
 }

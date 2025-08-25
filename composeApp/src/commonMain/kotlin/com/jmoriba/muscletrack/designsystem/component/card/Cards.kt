@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Visibility
@@ -42,6 +43,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -58,16 +60,19 @@ import com.aay.compose.radarChart.RadarChart
 import com.aay.compose.radarChart.model.NetLinesStyle
 import com.aay.compose.radarChart.model.Polygon
 import com.aay.compose.radarChart.model.PolygonStyle
+import com.jmoriba.muscletrack.common.utils.DateUtils
 import com.jmoriba.muscletrack.designsystem.component.badge.StatusBadge
 import com.jmoriba.muscletrack.designsystem.component.item.DashboardStatItem
 import com.jmoriba.muscletrack.designsystem.component.item.WorkoutItem
 import com.jmoriba.muscletrack.designsystem.component.row.WorkoutRow
 import com.jmoriba.muscletrack.designsystem.theme.Grey200Color
-import com.jmoriba.muscletrack.network.model.response.DashboardData
-import com.jmoriba.muscletrack.network.model.response.ExerciseData
-import com.jmoriba.muscletrack.network.model.response.RecentWorkout
-import com.jmoriba.muscletrack.network.model.response.WorkoutData
-import com.jmoriba.muscletrack.network.model.response.getCompletionRate
+import com.jmoriba.muscletrack.network.model.entities.ExerciseData
+import com.jmoriba.muscletrack.network.model.entities.ExerciseSet
+import com.jmoriba.muscletrack.network.model.entities.RecentWorkoutData
+import com.jmoriba.muscletrack.network.model.entities.StatsData
+import com.jmoriba.muscletrack.network.model.entities.WorkoutData
+import com.jmoriba.muscletrack.network.model.entities.getCompletionRate
+import com.jmoriba.muscletrack.network.model.entities.getDisplayName
 import muscletrack.composeapp.generated.resources.Res
 import muscletrack.composeapp.generated.resources.ic_category
 import muscletrack.composeapp.generated.resources.ic_equipment
@@ -76,7 +81,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun DashboardStatsCard(
-    dashboardData: DashboardData,
+    stats: StatsData,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -92,15 +97,13 @@ fun DashboardStatsCard(
                 .padding(6.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            val completionPercentage =  (dashboardData.stats.getCompletionRate())
-
-            val completionText = "${(completionPercentage * 100).toInt()}%"
+            val completionPercentage =  (stats.getCompletionRate())
 
             val items = listOf(
-                Triple("Total\nWorkouts", dashboardData.stats.totalWorkouts.toString(), "${dashboardData.stats.completedWorkouts} completed") to Pair(Icons.Filled.DateRange, Color(0xFF8B5CF6)),
-                Triple("Total\nExercises", dashboardData.stats.totalExercises.toString(), "${dashboardData.stats.exercisesWithPR} with PRs") to Pair(Icons.Filled.FitnessCenter, Color(0xFF8B5CF6)),
-                Triple("Completion\nRate", completionText, "") to Pair(Icons.Filled.CheckCircle, Color(0xFF10B981)),
-                Triple("Recent\nActivity", dashboardData.stats.recentActivity.toString(), "workouts in the\nlast 7 days") to Pair(Icons.Filled.Bolt, Color(0xFFFBBF24))
+                Triple("Total\nWorkouts", stats.totalWorkouts.toString(), "${stats.completedWorkouts} completed") to Pair(Icons.Filled.DateRange, Color(0xFF8B5CF6)),
+                Triple("Total\nExercises", stats.totalExercises.toString(), "${stats.exercisesWithPr} with PRs") to Pair(Icons.Filled.FitnessCenter, Color(0xFF8B5CF6)),
+                Triple("Completion\nRate", "${completionPercentage.toInt()}%", "") to Pair(Icons.Filled.CheckCircle, Color(0xFF10B981)),
+                Triple("Recent\nActivity", stats.recentActivity.toString(), "workouts in the\nlast 7 days") to Pair(Icons.Filled.Bolt, Color(0xFFFBBF24))
             )
 
             items.forEachIndexed { index, (data, iconData) ->
@@ -191,8 +194,8 @@ fun MuscleGroupBalanceCard(
 
 @Composable
 fun RecentWorkoutsCard(
-    workouts: List<RecentWorkout>,
-    onWorkoutClick: (RecentWorkout) -> Unit,
+    workouts: List<RecentWorkoutData>,
+    onWorkoutClick: (String) -> Unit,
     onViewAllWorkouts: () -> Unit
 ) {
     Card(
@@ -244,7 +247,7 @@ fun RecentWorkoutsCard(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onWorkoutClick(workout) }
+                        .clickable { onWorkoutClick(workout.id) }
                 ) {
                     WorkoutItem(
                         title = workout.name,
@@ -265,186 +268,176 @@ fun RecentWorkoutsCard(
 }
 
 @Composable
-fun WorkoutCard(workouts: List<WorkoutData>, onWorkoutClick: (WorkoutData) -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        workouts.forEach { workout ->
-            Card(
+fun WorkoutCard(workout: WorkoutData, onWorkoutClick: (String) -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                shape = RoundedCornerShape(12.dp)
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
             ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
+                Text(
+                    text = workout.name,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    color = Color(0xFF1F2937),
+                    modifier = Modifier.weight(1f)
+                )
+                StatusBadge(isCompleted = workout.isCompleted)
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Top
+                    Icon(
+                        imageVector = Icons.Default.CalendarToday,
+                        contentDescription = null,
+                        tint = Color(0xFF6B7280),
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Text(
+                        text = DateUtils.shortDate(workout.date),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFF6B7280)
+                    )
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AccessTime,
+                        contentDescription = null,
+                        tint = Color(0xFF6B7280),
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Text(
+                        text = workout.duration.toString(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFF6B7280)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                items(workout.tags) { tag ->
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                color = Color(0xFFE0E7FF),
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Text(
-                            text = workout.name,
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.SemiBold
-                            ),
-                            color = Color(0xFF1F2937),
-                            modifier = Modifier.weight(1f)
+                            text = tag.getDisplayName(),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color(0xFF6366F1)
                         )
-
-                        StatusBadge(isCompleted = workout.isCompleted)
                     }
+                }
+            }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.CalendarToday,
-                                contentDescription = null,
-                                tint = Color(0xFF6B7280),
-                                modifier = Modifier.size(14.dp)
-                            )
-                            Text(
-                                text = workout.date,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color(0xFF6B7280)
-                            )
-                        }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.FitnessCenter,
+                        contentDescription = null,
+                        tint = Color(0xFF6B7280),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Text(
+                        text = "${workout.numberOfExercises} exercises",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFF6B7280)
+                    )
+                }
 
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.AccessTime,
-                                contentDescription = null,
-                                tint = Color(0xFF6B7280),
-                                modifier = Modifier.size(14.dp)
-                            )
-                            Text(
-                                text = workout.duration.toString(),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color(0xFF6B7280)
-                            )
-                        }
-                    }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Repeat,
+                        contentDescription = null,
+                        tint = Color(0xFF6B7280),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Text(
+                        text = "${workout.numberOfSets} sets",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(0xFF6B7280)
+                    )
+                }
+            }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        items(workout.workoutTags) { tag ->
-                            tag.let {
-                                Box(
-                                    modifier = Modifier
-                                        .background(
-                                            color = Color(0xFFE0E7FF),
-                                            shape = RoundedCornerShape(12.dp)
-                                        )
-                                        .padding(horizontal = 8.dp, vertical = 4.dp)
-                                ) {
-                                    Text(
-                                        text = it.name,
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = Color(0xFF6366F1)
-                                    )
-                                }
-                            }
-                        }
-                    }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(
+                    onClick = { onWorkoutClick(workout.id) },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFE0E7FF)
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Visibility,
+                        contentDescription = null,
+                        tint = Color(0xFF6366F1),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "View Details",
+                        color = Color(0xFF6366F1),
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontWeight = FontWeight.Medium
+                        )
+                    )
+                }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.width(8.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.FitnessCenter,
-                                contentDescription = null,
-                                tint = Color(0xFF6B7280),
-                                modifier = Modifier.size(16.dp)
-                            )
-                            Text(
-                                text = "${workout.workoutExercises} exercises",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color(0xFF6B7280)
-                            )
-                        }
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Repeat,
-                                contentDescription = null,
-                                tint = Color(0xFF6B7280),
-                                modifier = Modifier.size(16.dp)
-                            )
-                            Text(
-                                text = "${workout.workoutExercises} sets",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color(0xFF6B7280)
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Button(
-                            onClick = { /* Handle view details */ },
-                            modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFE0E7FF)
-                            ),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Visibility,
-                                contentDescription = null,
-                                tint = Color(0xFF6366F1),
-                                modifier = Modifier.size(16.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "View Details",
-                                color = Color(0xFF6366F1),
-                                style = MaterialTheme.typography.bodySmall.copy(
-                                    fontWeight = FontWeight.Medium
-                                )
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        IconButton(
-                            onClick = { /* Handle delete */ }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Delete,
-                                contentDescription = "Delete workout",
-                                tint = Color(0xFFEF4444),
-                                modifier = Modifier.size(20.dp)
-                            )
-                        }
-                    }
+                IconButton(
+                    onClick = { /* Handle delete */ }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete workout",
+                        tint = Color(0xFFEF4444),
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
             }
         }
@@ -487,7 +480,7 @@ fun ExerciseCard(
                                 .padding(horizontal = 8.dp, vertical = 2.dp)
                         ) {
                             Text(
-                                text = exercise.primaryMuscle.name,
+                                text = exercise.primaryMuscle.getDisplayName(),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = Color(0xFF6366F1)
                             )
@@ -578,7 +571,7 @@ fun ExerciseCard(
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
-                    }
+                    }*/
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -615,7 +608,7 @@ fun ExerciseCard(
                                 modifier = Modifier.size(20.dp)
                             )
                         }
-                    }*/
+                    }
                 }
             }
         }
@@ -653,7 +646,7 @@ fun ExerciseDetailCard(
             FilterChip(
                 selected = false,
                 onClick = {},
-                label = { Text(exercise.primaryMuscle.name) }
+                label = { Text(exercise.primaryMuscle.getDisplayName()) }
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -667,7 +660,7 @@ fun ExerciseDetailCard(
                     FilterChip(
                         selected = false,
                         onClick = {},
-                        label = { Text(muscle.name) }
+                        label = { Text(muscle.getDisplayName()) }
                     )
                 }
             }
@@ -1014,6 +1007,112 @@ fun NotesCard(notes: String) {
         }
     }
     Spacer(modifier = Modifier.height(24.dp))
+}
+
+@Composable
+fun ExerciseSetCard(sets: List<ExerciseSet>) {
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = Color.White,
+        shadowElevation = 1.dp
+    ) {
+        Column {
+            // Header
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color(0xFFF8F9FA))
+                    .padding(12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("SET", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray, modifier = Modifier.weight(0.8f))
+                Text("TYPE", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray, modifier = Modifier.weight(1f))
+                Text("WEIGHT", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray, modifier = Modifier.weight(1f))
+                Text("REPS", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray, modifier = Modifier.weight(0.8f))
+                Text("STATUS", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray, modifier = Modifier.weight(1.2f))
+                Text("ACTIONS", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray, modifier = Modifier.weight(1f))
+            }
+
+            // Rows
+            sets.forEach { set ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = set.setNumber.toString(),
+                        fontSize = 14.sp,
+                        modifier = Modifier.weight(0.8f)
+                    )
+                    Text(
+                        text = set.type,
+                        fontSize = 14.sp,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = set.weight,
+                        fontSize = 14.sp,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = set.reps.toString(),
+                        fontSize = 14.sp,
+                        modifier = Modifier.weight(0.8f)
+                    )
+
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = if (set.isCompleted) Color(0xFF4CAF50).copy(alpha = 0.1f) else Color.Gray.copy(alpha = 0.1f),
+                        modifier = Modifier.weight(1.2f)
+                    ) {
+                        Text(
+                            text = if (set.isCompleted) "Completed" else "Pending",
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                            fontSize = 12.sp,
+                            color = if (set.isCompleted) Color(0xFF4CAF50) else Color.Gray,
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        IconButton(
+                            onClick = { },
+                            modifier = Modifier.size(32.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = null,
+                                tint = Color.Gray,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                        IconButton(
+                            onClick = { },
+                            modifier = Modifier.size(32.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.Delete,
+                                contentDescription = null,
+                                tint = Color(0xFFDC2626),
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+                    }
+                }
+
+                if (set != sets.last()) {
+                    HorizontalDivider(color = Color(0xFFE5E7EB))
+                }
+            }
+        }
+    }
 }
 
 @Preview

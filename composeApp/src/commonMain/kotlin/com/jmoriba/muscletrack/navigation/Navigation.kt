@@ -2,8 +2,6 @@ package com.jmoriba.muscletrack.navigation
 
 import androidx.compose.runtime.Composable
 import com.jmoriba.muscletrack.feature.auth.presentation.AuthViewModel
-import com.jmoriba.muscletrack.feature.workoutdetail.presentation.ReportDetailViewModel
-import com.jmoriba.muscletrack.feature.workoutdetail.ui.ReportDetailScreen
 import com.jmoriba.muscletrack.feature.dashboard.presentation.DashboardViewModel
 import com.jmoriba.muscletrack.feature.dashboard.ui.DashboardScreen
 import com.jmoriba.muscletrack.feature.exercise.presentation.ExerciseViewModel
@@ -16,6 +14,8 @@ import com.jmoriba.muscletrack.feature.posedetection.ui.PoseDetectionScreen
 import com.jmoriba.muscletrack.feature.workout.presentation.WorkoutViewModel
 import com.jmoriba.muscletrack.feature.workout.ui.WorkoutScreen
 import com.jmoriba.muscletrack.feature.setting.ui.SettingScreen
+import com.jmoriba.muscletrack.feature.workoutdetail.presentation.WorkoutDetailViewModel
+import com.jmoriba.muscletrack.feature.workoutdetail.ui.WorkoutDetailScreen
 import moe.tlaster.precompose.koin.koinViewModel
 import moe.tlaster.precompose.navigation.NavHost
 import moe.tlaster.precompose.navigation.Navigator
@@ -47,8 +47,8 @@ fun Navigation(navigator: Navigator) {
 
             DashboardScreen(
                 viewModel = viewModel,
-                onWorkoutClick = { workout ->
-                    navigator.navigate("detail/${workout.id}")
+                onWorkoutClick = { id ->
+                    navigator.navigate("detail/${id}")
                 },
                 onViewAllWorkouts = {
                     navigator.navigate(AppRoutes.Workouts.route)
@@ -61,8 +61,8 @@ fun Navigation(navigator: Navigator) {
 
             WorkoutScreen(
                 viewModel = viewModel,
-                onWorkoutClick = { workout ->
-                    navigator.navigate("detail/${workout.id}")
+                onWorkoutClick = { id ->
+                    navigator.navigate("workout_detail/${id}")
                 }
             )
         }
@@ -95,9 +95,9 @@ fun Navigation(navigator: Navigator) {
             val workoutId = backStackEntry.path<String>("id")
 
             if (workoutId != null) {
-                val viewModel = koinViewModel(ReportDetailViewModel::class) { parametersOf() }
+                val viewModel = koinViewModel(WorkoutDetailViewModel::class) { parametersOf() }
 
-                ReportDetailScreen(
+                WorkoutDetailScreen(
                     viewModel = viewModel,
                     workoutId = workoutId
                 )

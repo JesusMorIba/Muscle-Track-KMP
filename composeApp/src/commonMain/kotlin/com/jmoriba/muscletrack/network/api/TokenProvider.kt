@@ -7,7 +7,7 @@ class TokenProvider {
         token = jwt
     }
 
-    fun getToken(): String? = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWRlZi02ZWNlLTQ3OGYtOTdlMi0zZjJhMzdiZmIyMTAiLCJpYXQiOjE3NTI2NjU3MDUsImV4cCI6MTc1MzI3MDUwNX0.-Zst8qGviT5bXGrN53QtbRepiKDzGk6jbHJtwqFjoec"
+    fun getToken(): String? = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzE4OWRlZi02ZWNlLTQ3OGYtOTdlMi0zZjJhMzdiZmIyMTAiLCJpYXQiOjE3NTU0MzMxNjAsImV4cCI6MTc1NjAzNzk2MH0.6jNbt3LId75nxathJegKgROlxfbVW4MjDNImT-EQkN4"
 
     fun clearToken() {
         token = null

@@ -7,7 +7,6 @@ import com.jmoriba.muscletrack.feature.exercise.presentation.ExerciseViewModel
 import com.jmoriba.muscletrack.feature.exercisedetail.presentation.ExerciseDetailViewModel
 import com.jmoriba.muscletrack.feature.posedetection.presentation.PoseDetectionViewModel
 import com.jmoriba.muscletrack.feature.workout.presentation.WorkoutViewModel
-import com.jmoriba.muscletrack.feature.workoutdetail.presentation.ReportDetailViewModel
 import com.jmoriba.muscletrack.network.api.HttpClientProvider
 import com.jmoriba.muscletrack.network.api.TokenProvider
 import com.jmoriba.muscletrack.network.repository.AuthRepository
@@ -16,6 +15,7 @@ import com.jmoriba.muscletrack.network.repository.ExerciseDetailRepository
 import com.jmoriba.muscletrack.network.repository.ExerciseRepository
 import com.jmoriba.muscletrack.network.repository.WorkoutRepository
 import com.jmoriba.muscletrack.common.utils.PermissionBridge
+import com.jmoriba.muscletrack.feature.workoutdetail.presentation.WorkoutDetailViewModel
 import org.koin.dsl.module
 
 fun appModule() = module {
@@ -35,7 +35,7 @@ fun appModule() = module {
     // ViewModels
     factory { AuthViewModel(get()) }
     factory { WorkoutViewModel(get()) }
-    factory { ReportDetailViewModel(get()) }
+    factory { WorkoutDetailViewModel(get()) }
     factory { ExerciseViewModel(get()) }
     factory { ExerciseDetailViewModel(get()) }
     factory { DashboardViewModel(get()) }

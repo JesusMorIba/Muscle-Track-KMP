@@ -1,14 +1,8 @@
 package com.jmoriba.muscletrack
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -36,67 +30,65 @@ fun MainScaffold() {
 
     Scaffold(
         topBar = {
-            if (currentAppRoutes?.title != null || currentAppRoutes?.showBackButton == true) {
-                CenterAlignedTopAppBar(
-                    title = {
-                        Box(contentAlignment = Alignment.Center) {
+            currentAppRoutes?.let { route ->
+                if (route.title != null || route.showBackButton) {
+                    CenterAlignedTopAppBar(
+                        title = {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     painter = painterResource(Res.drawable.ic_muscletrack),
-                                    contentDescription = "MuscleTrack Icon",
+                                    contentDescription = null,
                                     tint = PrimaryColor,
                                     modifier = Modifier.size(28.dp)
                                 )
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Spacer(Modifier.width(8.dp))
                                 Text(
-                                    text = currentAppRoutes.title.orEmpty(),
+                                    text = route.title.orEmpty(),
                                     style = MaterialTheme.typography.headlineMedium
                                 )
                             }
-                        }
-                    },
-                    navigationIcon = {
-                        if (currentAppRoutes.showBackButton) {
-                            IconButton(onClick = { navigator.goBack() }) {
-                                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        },
+                        navigationIcon = {
+                            if (route.showBackButton) {
+                                IconButton(onClick = { navigator.goBack() }) {
+                                    Icon(
+                                        Icons.AutoMirrored.Filled.ArrowBack,
+                                        contentDescription = "Volver"
+                                    )
+                                }
                             }
-                        }
-                    },
-                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = Color.Transparent,
-                        titleContentColor = MaterialTheme.colorScheme.onBackground,
-                        navigationIconContentColor = MaterialTheme.colorScheme.onBackground
+                        },
+                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                            containerColor = Color.Transparent,
+                            titleContentColor = MaterialTheme.colorScheme.onBackground,
+                            navigationIconContentColor = MaterialTheme.colorScheme.onBackground
+                        )
                     )
-                )
+                }
             }
         },
         bottomBar = {
             if (currentAppRoutes?.showBottomBar == true) {
-                NavigationBar(navigator = navigator)
+                NavigationBar(navigator)
             }
         },
         floatingActionButton = {
-            if (currentAppRoutes?.showFloatingButton == true) {
-                IconButton(
-                    onClick = { navigator.goBack() },
-                    modifier = Modifier
-                        .size(48.dp)
-                        .background(color = PrimaryColor, shape = CircleShape),
-                    colors = IconButtonDefaults.iconButtonColors(
-                        contentColor = Color.White
-                    )
+            currentAppRoutes?.fabAction?.let { action ->
+                FloatingActionButton(
+                    onClick = { action(navigator) },
+                    containerColor = PrimaryColor,
+                    contentColor = Color.White
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "Back")
+                    Icon(Icons.Default.Add, contentDescription = "Add")
                 }
             }
         }
     ) { innerPadding ->
         Box(
-            modifier = Modifier
-                .padding(
-                    top = 64.dp,
-                    bottom = innerPadding.calculateBottomPadding()
-                )
+            modifier = Modifier.padding(
+                top = 64.dp,
+                bottom = innerPadding.calculateBottomPadding()
+            )
         ) {
             Navigation(navigator)
         }

@@ -1,11 +1,30 @@
 package com.jmoriba.muscletrack.network.model.entities
 
-enum class EquipmentEnum(val displayName: String) {
-    DUMBBELL("Dumbbell"),
-    BARBELL("Barbell"),
-    MACHINE("Machine"),
-    BODYWEIGHT("Bodyweight"),
-    KETTLEBELL("Kettlebell");
+import kotlinx.serialization.SerialName
 
-    override fun toString(): String = displayName
+enum class EquipmentEnum {
+    @SerialName("DUMBBELL")
+    DUMBBELL,
+
+    @SerialName("BARBELL")
+    BARBELL,
+
+    @SerialName("MACHINE")
+    MACHINE,
+
+    @SerialName("BODYWEIGHT")
+    BODYWEIGHT,
+
+    @SerialName("KETTLEBELL")
+    KETTLEBELL
+}
+
+fun EquipmentEnum.getDisplayName(): String {
+    return when (this) {
+        EquipmentEnum.DUMBBELL -> "Pecho"
+        EquipmentEnum.BARBELL -> "Espalda"
+        EquipmentEnum.MACHINE -> "Hombros"
+        EquipmentEnum.BODYWEIGHT -> "Bíceps"
+        EquipmentEnum.KETTLEBELL -> "Tríceps"
+    }
 }

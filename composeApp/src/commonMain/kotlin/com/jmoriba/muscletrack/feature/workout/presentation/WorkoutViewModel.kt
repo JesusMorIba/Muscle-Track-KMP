@@ -3,7 +3,7 @@ package com.jmoriba.muscletrack.feature.workout.presentation
 import com.jmoriba.muscletrack.common.utils.ErrorHandler
 import com.jmoriba.muscletrack.common.utils.Resource
 import com.jmoriba.muscletrack.network.model.entities.WorkoutFilterEnum
-import com.jmoriba.muscletrack.network.model.response.WorkoutData
+import com.jmoriba.muscletrack.network.model.entities.WorkoutData
 import com.jmoriba.muscletrack.network.repository.WorkoutRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -51,11 +51,11 @@ class WorkoutViewModel(private val repository: WorkoutRepository) : ViewModel() 
             try {
                 val result = repository.getWorkouts()
 
-                val filtered = filterWorkouts(result, _uiState.value.selectedFilter)
+                val filtered = filterWorkouts(result?.workouts ?: emptyList(), _uiState.value.selectedFilter)
 
                 _uiState.update {
                     it.copy(
-                        allWorkouts = Resource.Success(result),
+                        allWorkouts = Resource.Success(result?.workouts ?: emptyList()),
                         filteredWorkouts = Resource.Success(filtered)
                     )
                 }

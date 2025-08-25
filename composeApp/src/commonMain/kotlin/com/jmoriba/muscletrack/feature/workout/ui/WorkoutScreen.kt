@@ -12,16 +12,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.jmoriba.muscletrack.common.utils.Resource
 import com.jmoriba.muscletrack.designsystem.component.card.WorkoutCard
 import com.jmoriba.muscletrack.designsystem.component.searchbar.SearchBar
+import com.jmoriba.muscletrack.designsystem.component.state.ErrorMessage
+import com.jmoriba.muscletrack.designsystem.component.state.LoadingIndicator
 import com.jmoriba.muscletrack.designsystem.component.tab.StatusTabs
 import com.jmoriba.muscletrack.designsystem.theme.LightBackgroundAppColor
 import com.jmoriba.muscletrack.designsystem.theme.spacingS
 import com.jmoriba.muscletrack.di.previewModule
 import com.jmoriba.muscletrack.feature.workout.presentation.WorkoutEvent
 import com.jmoriba.muscletrack.feature.workout.presentation.WorkoutViewModel
-import com.jmoriba.muscletrack.network.model.response.WorkoutData
+import com.jmoriba.muscletrack.network.model.entities.WorkoutData
 import moe.tlaster.precompose.PreComposeApp
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.koin.koinViewModel
@@ -30,7 +33,7 @@ import org.koin.compose.KoinApplication
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun WorkoutScreen(viewModel : WorkoutViewModel, onWorkoutClick: (WorkoutData) -> Unit) {
+fun WorkoutScreen(viewModel : WorkoutViewModel, onWorkoutClick: (String) -> Unit) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Box(Modifier.background(LightBackgroundAppColor)) {
@@ -59,15 +62,22 @@ fun WorkoutScreen(viewModel : WorkoutViewModel, onWorkoutClick: (WorkoutData) ->
 
                 when (val workouts = uiState.filteredWorkouts) {
                     is Resource.Loading -> {
-                        CircularProgressIndicator()
+                        LoadingIndicator()
                     }
 
                     is Resource.Success -> {
-                        WorkoutCard(workouts = workouts.data, onWorkoutClick = onWorkoutClick)
+                        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            workouts.data.forEach { workout ->
+                                WorkoutCard(
+                                    workout = workout,
+                                    onWorkoutClick = { onWorkoutClick(workout.id) }
+                                )
+                            }
+                        }
                     }
 
                     is Resource.Error -> {
-                        Text("Error loading workouts: ${workouts.error}")
+                        ErrorMessage("Error loading workouts: ${workouts.error}")
                     }
                 }
 

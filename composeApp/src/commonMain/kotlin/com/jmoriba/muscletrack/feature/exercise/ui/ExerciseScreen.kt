@@ -5,11 +5,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.jmoriba.muscletrack.common.utils.Resource
 import com.jmoriba.muscletrack.designsystem.component.searchbar.SearchBar
 import com.jmoriba.muscletrack.designsystem.component.card.ExerciseCard
 import com.jmoriba.muscletrack.designsystem.component.selector.CustomSelector
@@ -17,6 +20,9 @@ import com.jmoriba.muscletrack.designsystem.theme.LightBackgroundAppColor
 import com.jmoriba.muscletrack.designsystem.theme.spacingS
 import com.jmoriba.muscletrack.di.previewModule
 import com.jmoriba.muscletrack.feature.exercise.presentation.ExerciseViewModel
+import com.jmoriba.muscletrack.network.model.entities.EquipmentEnum
+import com.jmoriba.muscletrack.network.model.entities.MuscleEnum
+import com.jmoriba.muscletrack.network.model.entities.getDisplayName
 import moe.tlaster.precompose.PreComposeApp
 import moe.tlaster.precompose.flow.collectAsStateWithLifecycle
 import moe.tlaster.precompose.koin.koinViewModel
@@ -50,37 +56,46 @@ fun ExerciseScreen(viewModel : ExerciseViewModel, onExerciseClick: (String) -> U
 
                 Spacer(modifier = Modifier.height(spacingS()))
 
-                /*
                 CustomSelector(
                     selectedItem = uiState.selectedMuscleGroup,
-                    items = listOf<MuscleGroup?>(null) + MuscleGroup.entries,
+                    items = listOf<MuscleEnum?>(null) + MuscleEnum.entries,
                     onItemSelected = viewModel::onMuscleGroupSelected,
                     placeholder = "Select muscle group",
                     leadingIcon = Res.drawable.ic_muscle_group,
-                    itemDisplayText = { it?.displayName ?: "All muscle groups" }
-                )*/
-
-                Spacer(modifier = Modifier.height(spacingS()))
-
-                /*
-                CustomSelector(
-                    selectedItem = uiState.selectedEquipment,
-                    items = listOf<Equipment?>(null) + Equipment.entries,
-                    onItemSelected = viewModel::onEquipmentSelected,
-                    placeholder = "Select equipment",
-                    leadingIcon = Res.drawable.ic_equipment,
-                    itemDisplayText = { it?.displayName ?: "All equipment" }
-                )*/
-
-                Spacer(modifier = Modifier.height(spacingS()))
-
-                ExerciseCard(
-                    exercises = uiState.filteredExercises,
-                    onViewDetails = { exercise -> onExerciseClick(exercise.id) },
-                    onDelete = {}
+                    itemDisplayText = { it?.getDisplayName() ?: "All muscle groups" }
                 )
 
                 Spacer(modifier = Modifier.height(spacingS()))
+
+                CustomSelector(
+                    selectedItem = uiState.selectedEquipment,
+                    items = listOf<EquipmentEnum?>(null) + EquipmentEnum.entries,
+                    onItemSelected = viewModel::onEquipmentSelected,
+                    placeholder = "Select equipment",
+                    leadingIcon = Res.drawable.ic_equipment,
+                    itemDisplayText = { it?.getDisplayName() ?: "All equipment" }
+                )
+
+                Spacer(modifier = Modifier.height(spacingS()))
+
+                when (val data = uiState.allExercises) {
+                    is Resource.Loading -> {
+                        CircularProgressIndicator()
+                    }
+                    is Resource.Success -> {
+                        ExerciseCard(
+                            exercises = uiState.filteredExercises,
+                            onViewDetails = { exercise -> onExerciseClick(exercise.id) },
+                            onDelete = {}
+                        )
+
+                        Spacer(modifier = Modifier.height(spacingS()))
+                    } is Resource.Error -> {
+                        Column {
+                            Text("Error: ${data.error}")
+                        }
+                    }
+                }
             }
         }
     }

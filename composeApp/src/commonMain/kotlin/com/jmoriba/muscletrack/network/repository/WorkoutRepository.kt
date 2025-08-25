@@ -1,12 +1,13 @@
 package com.jmoriba.muscletrack.network.repository
 
-import com.jmoriba.muscletrack.network.model.response.WorkoutData
+import com.jmoriba.muscletrack.network.model.response.WorkoutDetailResponse
+import com.jmoriba.muscletrack.network.model.response.WorkoutResponse
 
 interface WorkoutRepository {
 
-    suspend fun getWorkouts(): List<WorkoutData>
+    suspend fun getWorkouts(): WorkoutResponse?
 
-    // suspend fun getWorkoutById(id: Int): WorkoutWithExercisesAndSetsData?
+    suspend fun getWorkoutById(id: String): WorkoutDetailResponse?
 
     // fun editWorkout(workout: WorkoutExerciseData)
 

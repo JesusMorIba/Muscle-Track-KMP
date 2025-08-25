@@ -1,14 +1,12 @@
 package com.jmoriba.muscletrack.feature.exercisedetail.presentation
 
 import com.jmoriba.muscletrack.common.utils.Resource
-import com.jmoriba.muscletrack.network.model.response.ExerciseData
-import com.jmoriba.muscletrack.network.model.response.WorkoutData
+import com.jmoriba.muscletrack.network.model.entities.ExerciseData
+import com.jmoriba.muscletrack.network.model.entities.WorkoutData
 import com.jmoriba.muscletrack.network.repository.ExerciseDetailRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import moe.tlaster.precompose.viewmodel.ViewModel
-import moe.tlaster.precompose.viewmodel.viewModelScope
 
 class ExerciseDetailViewModel(private val repository: ExerciseDetailRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(ExerciseDetailUiState())

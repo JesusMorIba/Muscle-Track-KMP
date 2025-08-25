@@ -1,5 +1,6 @@
 package com.jmoriba.muscletrack.network.model.response
 
+import com.jmoriba.muscletrack.network.model.entities.WorkoutData
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -20,13 +20,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jmoriba.muscletrack.designsystem.theme.Green
 import com.jmoriba.muscletrack.designsystem.theme.Orange
-import com.jmoriba.muscletrack.network.model.response.WorkoutData
+import com.jmoriba.muscletrack.network.model.entities.WorkoutData
 import muscletrack.composeapp.generated.resources.Res
 import muscletrack.composeapp.generated.resources.ic_arrow_left
 import muscletrack.composeapp.generated.resources.ic_fire
 import muscletrack.composeapp.generated.resources.ic_time
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun WorkoutItem (
