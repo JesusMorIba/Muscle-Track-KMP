@@ -1,6 +1,8 @@
 package com.jmoriba.muscletrack.navigation
 
 import androidx.compose.runtime.Composable
+import com.jmoriba.muscletrack.feature.addworkout.presentation.AddWorkoutViewModel
+import com.jmoriba.muscletrack.feature.addworkout.ui.AddWorkoutScreen
 import com.jmoriba.muscletrack.feature.auth.presentation.AuthViewModel
 import com.jmoriba.muscletrack.feature.dashboard.presentation.DashboardViewModel
 import com.jmoriba.muscletrack.feature.dashboard.ui.DashboardScreen
@@ -64,6 +66,14 @@ fun Navigation(navigator: Navigator) {
                 onWorkoutClick = { id ->
                     navigator.navigate("workout_detail/${id}")
                 }
+            )
+        }
+
+        scene(route = AppRoutes.AddWorkout.route) {
+            val viewModel = koinViewModel(AddWorkoutViewModel::class) { parametersOf() }
+
+            AddWorkoutScreen(
+                viewModel = viewModel,
             )
         }
 

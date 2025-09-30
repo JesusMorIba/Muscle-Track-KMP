@@ -15,7 +15,9 @@ import com.jmoriba.muscletrack.network.repository.ExerciseDetailRepository
 import com.jmoriba.muscletrack.network.repository.ExerciseRepository
 import com.jmoriba.muscletrack.network.repository.WorkoutRepository
 import com.jmoriba.muscletrack.common.utils.PermissionBridge
+import com.jmoriba.muscletrack.feature.addworkout.presentation.AddWorkoutViewModel
 import com.jmoriba.muscletrack.feature.workoutdetail.presentation.WorkoutDetailViewModel
+import com.jmoriba.muscletrack.network.repository.AddWorkoutRepository
 import org.koin.dsl.module
 
 fun appModule() = module {
@@ -27,6 +29,7 @@ fun appModule() = module {
 
     // Data repositories
     single<WorkoutRepository> { WorkoutRepositoryImpl(get()) }
+    single<AddWorkoutRepository> { AddWorkoutRepositoryImpl(get()) }
     single<DashboardRepository> { DashboardRepositoryImpl(get()) }
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<ExerciseRepository> { ExerciseRepositoryImpl(get()) }
@@ -35,6 +38,7 @@ fun appModule() = module {
     // ViewModels
     factory { AuthViewModel(get()) }
     factory { WorkoutViewModel(get()) }
+    factory { AddWorkoutViewModel(get()) }
     factory { WorkoutDetailViewModel(get()) }
     factory { ExerciseViewModel(get()) }
     factory { ExerciseDetailViewModel(get()) }

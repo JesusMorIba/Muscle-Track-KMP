@@ -89,7 +89,7 @@ fun WorkoutScreen(viewModel : WorkoutViewModel, onWorkoutClick: (String) -> Unit
 
 @Preview
 @Composable
-fun HomeScreenPreview() {
+fun WorkoutScreenPreview() {
     PreComposeApp {
         KoinApplication(application = {
             modules(previewModule())

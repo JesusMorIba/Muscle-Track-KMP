@@ -20,7 +20,8 @@ sealed class AppRoutes(
     object Login : AppRoutes("login", showBottomBar = false)
     object Signup : AppRoutes("signup", showBottomBar = false)
     object Dashboard : AppRoutes("dashboard", title = "Dashboard", icon = Res.drawable.ic_dashboard)
-    object Workouts : AppRoutes("workouts", title = "Workouts", icon = Res.drawable.ic_workout, fabAction = { nav -> nav.navigate("workout_create") })
+    object Workouts : AppRoutes("workouts", title = "Workouts", icon = Res.drawable.ic_workout, fabAction = { nav -> nav.navigate("add_workout") })
+    object AddWorkout : AppRoutes(route = "add_workout", title = "Add Workout", showBottomBar = false, showBackButton = true)
     object Exercises : AppRoutes("exercises", title = "Exercises", icon = Res.drawable.ic_exercise, fabAction = { nav -> nav.navigate("exercise_create") })
     object Detection : AppRoutes("detection", title = "Pose Detection", icon = Res.drawable.ic_pose)
     object Settings : AppRoutes("settings", title = "Settings", icon = Res.drawable.ic_setting)
@@ -28,7 +29,7 @@ sealed class AppRoutes(
     object ExerciseDetail : AppRoutes(route = "exercise_detail/{id}", title = "Exercise Detail", showBottomBar = false, showBackButton = true)
 
     companion object {
-        val allRoutes = listOf(Login, Signup, Dashboard, Workouts, Exercises, Detection, Settings, WorkoutDetail, ExerciseDetail)
+        val allRoutes = listOf(Login, Signup, Dashboard, Workouts, AddWorkout, Exercises, Detection, Settings, WorkoutDetail, ExerciseDetail)
 
         val bottomNavItems = listOf(Dashboard, Workouts, Exercises, Settings)
 

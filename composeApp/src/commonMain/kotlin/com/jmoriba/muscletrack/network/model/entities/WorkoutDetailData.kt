@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class WorkoutDetailData(
     val id: String,
     val userId: String,
-    val name: String,
+    var name: String,
     val duration: Int,
     val notes: String? = null,
     val date: String,
